@@ -1,0 +1,27 @@
+<Window x:Class="ProxyRouterWpf.Views.Dialogs.GroupEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nhóm" Width="420" SizeToContent="Height"
+        WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Surface.Background}"
+        Foreground="{DynamicResource Brush.Text.Primary}"
+        TextOptions.TextFormattingMode="Display">
+    <Border BorderBrush="{DynamicResource Brush.Surface.BorderBrush}" BorderThickness="1">
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Background="{DynamicResource Brush.TitleBar.Background}" Padding="16,12" MouseLeftButtonDown="Header_Drag">
+                <TextBlock x:Name="TitleText" Text="Thêm nhóm" FontWeight="SemiBold" FontSize="14"/>
+            </Border>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="16">
+                <Button Content="Huỷ" Click="Cancel_Click" MinWidth="84"/>
+                <Button Content="Lưu" Style="{StaticResource AccentButton}" Click="Ok_Click" MinWidth="84" Margin="8,0,0,0"/>
+            </StackPanel>
+            <StackPanel Margin="16,14">
+                <Label Content="Tên nhóm"/>
+                <TextBox x:Name="NameBox"/>
+                <Label Content="Match mode" Margin="0,10,0,0"/>
+                <ComboBox x:Name="MatchModeBox"/>
+            </StackPanel>
+        </DockPanel>
+    </Border>
+</Window>

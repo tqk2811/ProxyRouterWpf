@@ -1,0 +1,118 @@
+<UserControl x:Class="ProxyRouterWpf.Views.LogsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ProxyRouterWpf.ViewModels"
+             d:DataContext="{d:DesignInstance vm:LogsViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Filter bar -->
+        <Border Grid.Row="0" Style="{StaticResource Card}" Padding="12" Margin="0,0,0,10">
+            <StackPanel>
+                <WrapPanel>
+                    <ComboBox Width="150" Margin="0,0,8,8" ItemsSource="{Binding OutcomeOptions}" SelectedItem="{Binding SelectedOutcome}"/>
+                    <ComboBox Width="120" Margin="0,0,8,8" ItemsSource="{Binding ProxyTypeOptions}" SelectedItem="{Binding SelectedProxyType}"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding ClientServer, UpdateSourceTrigger=PropertyChanged}" Tag="Client/Server"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding TargetHost, UpdateSourceTrigger=PropertyChanged}" Tag="Target host"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding PickedSource, UpdateSourceTrigger=PropertyChanged}" Tag="Picked source"/>
+                    <DatePicker Width="130" Margin="0,0,8,8" SelectedDate="{Binding FromDate}"/>
+                    <DatePicker Width="130" Margin="0,0,8,8" SelectedDate="{Binding ToDate}"/>
+                    <Button Content="Lọc" Style="{StaticResource AccentButton}" Command="{Binding ApplyCommand}" Margin="0,0,8,8"/>
+                    <Button Content="Xoá lọc" Command="{Binding ClearFiltersCommand}" Margin="0,0,8,8"/>
+                </WrapPanel>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Content="Tự làm mới" IsChecked="{Binding AutoRefresh}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <Button Content="Làm mới" Command="{Binding RefreshCommand}" Margin="0,0,8,0"/>
+                    <TextBlock Text="Kích thước trang:" VerticalAlignment="Center" Margin="8,0,6,0" Style="{StaticResource Subtle}"/>
+                    <ComboBox Width="80" ItemsSource="{Binding PageSizeOptions}" SelectedItem="{Binding PageSize}"/>
+                    <Button Content="Xoá toàn bộ log" Style="{StaticResource DangerButton}" Command="{Binding ClearAllCommand}" HorizontalAlignment="Right" Margin="16,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Grid -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0">
+            <DataGrid x:Name="LogGrid" ItemsSource="{Binding Items}" CanUserSortColumns="True"
+                      Sorting="LogGrid_Sorting" MouseDoubleClick="LogGrid_DoubleClick" BorderThickness="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="EndAt" SortMemberPath="EndAt" Width="150"
+                                        Binding="{Binding EndAt, Converter={StaticResource LocalTime}}"/>
+                    <DataGridTemplateColumn Header="Outcome" SortMemberPath="Outcome" Width="110">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="5" Padding="7,2" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                        Background="{Binding Outcome, Converter={StaticResource OutcomeBrush}}">
+                                    <TextBlock Text="{Binding Outcome}" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Client → Server" SortMemberPath="ClientAddress" Width="220">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding ClientIPAddress}"/>
+                                    <TextBlock Text="{Binding ClientPort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                                    <TextBlock Text=" → " Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                                    <TextBlock Text="{Binding ServerIPAddress, Converter={StaticResource Dash}}"/>
+                                    <TextBlock Text="{Binding ServerPort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Upload" SortMemberPath="TotalBytesUpload" Width="90"
+                                        Binding="{Binding TotalBytesUpload, Converter={StaticResource Bytes}}"/>
+                    <DataGridTextColumn Header="Download" SortMemberPath="TotalBytesDownload" Width="90"
+                                        Binding="{Binding TotalBytesDownload, Converter={StaticResource Bytes}}"/>
+                    <DataGridTemplateColumn Header="Target" SortMemberPath="TargetHost" Width="180">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding TargetHost, Converter={StaticResource Dash}}"/>
+                                    <TextBlock Text="{Binding TargetPort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Reject" SortMemberPath="RejectReason" Width="150"
+                                        Binding="{Binding RejectReason, Converter={StaticResource Dash}}"/>
+                    <DataGridTextColumn Header="Group" SortMemberPath="MatchedGroupName" Width="110"
+                                        Binding="{Binding MatchedGroupName, Converter={StaticResource Dash}}"/>
+                    <DataGridTemplateColumn Header="Picked source" SortMemberPath="PickedSourceAddress" Width="180">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding PickedSourceAddress, Converter={StaticResource Dash}}"/>
+                                    <TextBlock Text="{Binding PickedSourcePort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="" Width="70">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Xem" Height="24" Padding="10,0" Click="ViewDetail_Click"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Footer paging -->
+        <DockPanel Grid.Row="2" Margin="0,10,0,0">
+            <TextBlock Text="{Binding PageInfo}" Style="{StaticResource Subtle}" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="◀ Trước" Command="{Binding PrevCommand}"/>
+                <Button Content="Sau ▶" Command="{Binding NextCommand}" Margin="8,0,0,0"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</UserControl>
