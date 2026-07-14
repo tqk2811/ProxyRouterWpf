@@ -203,7 +203,6 @@
     <Style x:Key="NavButton" TargetType="RadioButton">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Height" Value="38"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="Template">
@@ -581,13 +580,12 @@
     <Style TargetType="TabItem">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Cursor" Value="Hand"/>
         <!-- Tab strip lives inside the WindowChrome caption; keep the header clickable, not draggable. -->
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
-                    <Border x:Name="bd" CornerRadius="7" Padding="13,5" Margin="0,0,5,0" Background="Transparent">
+                    <Border x:Name="bd" Cursor="Hand" CornerRadius="7" Padding="13,5" Margin="0,0,5,0" Background="Transparent">
                         <ContentPresenter ContentSource="Header" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -627,7 +625,6 @@
     <Style TargetType="MenuItem">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="MenuItem">
@@ -678,7 +675,6 @@
         <Setter Property="Padding" Value="10,0"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridColumnHeader">
@@ -762,7 +758,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <DatePickerTextBox x:Name="PART_TextBox" Grid.Column="0" Margin="8,0" Focusable="{TemplateBinding Focusable}"/>
-                            <Button x:Name="PART_Button" Grid.Column="1" Focusable="False" Width="30" Cursor="Hand"
+                            <Button x:Name="PART_Button" Grid.Column="1" Focusable="False" Width="30"
                                     Foreground="{DynamicResource Brush.Text.Secondary}" Background="Transparent" BorderThickness="0">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
