@@ -18,9 +18,6 @@
             <TextBlock Style="{StaticResource Subtle}" Margin="0,4,0,0"
                        Text="Khi vượt quá, log cũ nhất bị loại bỏ trước (100..200000)."/>
 
-            <Label Content="Tên hiển thị" Margin="0,14,0,0"/>
-            <TextBox Width="220" HorizontalAlignment="Left" Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}"/>
-
             <Button Content="Lưu" Style="{StaticResource AccentButton}" Command="{Binding SaveCommand}"
                     HorizontalAlignment="Left" MinWidth="100" Margin="0,20,0,0"/>
 

@@ -24,8 +24,6 @@ namespace ProxyRouterWpf.Configuration
         /// <summary>Max number of tunnel log rows kept in RAM (FIFO, oldest dropped first).</summary>
         public int LogCapacity { get; set; } = 5000;
 
-        public string? DisplayName { get; set; }
-
         /// <summary>Proxy output copy format: "http_socks5" | "socks4".</summary>
         public string ProxyOutputFormat { get; set; } = "http_socks5";
     }

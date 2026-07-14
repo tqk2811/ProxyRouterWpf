@@ -15,7 +15,6 @@ namespace ProxyRouterWpf.ViewModels
             _svc = svc;
             var s = _svc.Config.Config.Settings;
             logCapacity = s.LogCapacity;
-            displayName = s.DisplayName;
             selectedTheme = ThemeManager.Parse(s.Theme);
         }
 
@@ -23,7 +22,6 @@ namespace ProxyRouterWpf.ViewModels
 
         [ObservableProperty] ThemeMode selectedTheme;
         [ObservableProperty] int logCapacity;
-        [ObservableProperty] string? displayName;
 
         partial void OnSelectedThemeChanged(ThemeMode value)
         {
@@ -44,7 +42,6 @@ namespace ProxyRouterWpf.ViewModels
             _svc.LogStore.SetCapacity(cap);
             var s = _svc.Config.Config.Settings;
             s.LogCapacity = cap;
-            s.DisplayName = DisplayName;
             _svc.Config.Save();
             MessageBox.Show("Đã lưu cài đặt.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
         }
