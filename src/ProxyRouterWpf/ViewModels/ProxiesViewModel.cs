@@ -18,7 +18,7 @@ namespace ProxyRouterWpf.ViewModels
             _svc = svc;
             _svc.Manager.StateChanged += OnManagerStateChanged;
             LoadConfigFields();
-            LocalIpText = _svc.LocalIp.Get();
+            LoadLocalIps();
             ReloadAll();
         }
 
@@ -37,9 +37,12 @@ namespace ProxyRouterWpf.ViewModels
         // ---- Runtime ----
         [ObservableProperty] bool isRunning;
         [ObservableProperty] string statusText = "Đã dừng";
-        [ObservableProperty] string? localIpText;
+        [ObservableProperty] string? selectedIp;
         [ObservableProperty] string outputFormat = "http_socks5";
         [ObservableProperty] string outputPreview = string.Empty;
+
+        /// <summary>All IPv4 addresses bound to this machine (listeners bind to 0.0.0.0).</summary>
+        public ObservableCollection<string> LocalIps { get; } = new();
 
         public bool CanEdit => !IsRunning;
 
@@ -185,7 +188,16 @@ namespace ProxyRouterWpf.ViewModels
 
         // ---------- Local IP + output preview ----------
         partial void OnOutputFormatChanged(string value) => BuildOutputPreview();
-        partial void OnLocalIpTextChanged(string? value) => BuildOutputPreview();
+        partial void OnSelectedIpChanged(string? value) => BuildOutputPreview();
+
+        void LoadLocalIps()
+        {
+            var current = SelectedIp;
+            LocalIps.Clear();
+            foreach (var ip in _svc.LocalIp.GetAll())
+                LocalIps.Add(ip);
+            SelectedIp = (current != null && LocalIps.Contains(current)) ? current : LocalIps.FirstOrDefault();
+        }
 
         void BuildOutputPreview()
         {
@@ -195,7 +207,7 @@ namespace ProxyRouterWpf.ViewModels
 
         List<string> BuildOutputLines()
         {
-            var ip = string.IsNullOrEmpty(LocalIpText) ? "0.0.0.0" : LocalIpText!;
+            var ip = string.IsNullOrEmpty(SelectedIp) ? "0.0.0.0" : SelectedIp!;
             int count = IsRunning ? _activeIds.Count : UngroupedSources.Count;
             var result = new List<string>();
             bool socks4 = string.Equals(OutputFormat, "socks4", StringComparison.OrdinalIgnoreCase);
@@ -232,7 +244,7 @@ namespace ProxyRouterWpf.ViewModels
         }
 
         [RelayCommand]
-        void Refresh() => ReloadAll();
+        void Refresh() { LoadLocalIps(); ReloadAll(); }
 
         // ---------- Source CRUD (called from view code-behind) ----------
         public void AddSourcesBulk(Guid? groupId, ProxyType proxyType, string lines)

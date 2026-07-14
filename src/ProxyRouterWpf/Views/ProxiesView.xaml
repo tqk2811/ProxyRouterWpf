@@ -84,8 +84,11 @@
                         </ComboBox>
                         <Button Content="Copy" Command="{Binding CopyOutputCommand}" Margin="8,0,0,0" Height="28"/>
                     </StackPanel>
-                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Subtle}" Margin="0,6,0,4"
-                               Text="{Binding LocalIpText, StringFormat='IP (LAN/VPS): {0}', TargetNullValue='IP (LAN/VPS): (không xác định)'}"/>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,6,0,4">
+                        <TextBlock Text="IP:" Style="{StaticResource Subtle}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <ComboBox Width="200" Height="28" ItemsSource="{Binding LocalIps}" SelectedItem="{Binding SelectedIp}"
+                                  ToolTip="IP để build output (listener bind mọi IP)"/>
+                    </StackPanel>
                     <Border Style="{StaticResource Card}" Padding="8" Background="{DynamicResource Brush.Surface.Alt}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <TextBox Text="{Binding OutputPreview, Mode=OneWay}" IsReadOnly="True" BorderThickness="0"

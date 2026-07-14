@@ -5,19 +5,53 @@ using System.Net.Sockets;
 namespace ProxyRouterWpf.Proxy
 {
     /// <summary>
-    /// Resolves the machine's primary IPv4 from the local network (no internet call). Uses the
-    /// outbound-routing trick — a UDP socket "connected" to a public address reports the source IP
-    /// the OS would route through, without sending any packet. On a VPS whose NIC holds the public
-    /// address, this returns that public IP; on a LAN it returns the private IP (e.g. 192.168.x.x).
-    /// Falls back to enumerating active interfaces.
+    /// Enumerates the IPv4 addresses bound to this machine (no internet call). Because the proxy
+    /// listeners bind to <c>0.0.0.0</c>, they are reachable on every one of these addresses — e.g.
+    /// <c>192.168.1.5</c>, <c>127.0.0.1</c>, or a VPS public IP on the NIC. The address the OS would
+    /// route outbound through is listed first (best default for building the copy-to-clipboard list).
     /// </summary>
     public sealed class LocalIpV4Provider
     {
-        public string? Get()
+        /// <summary>Primary/outbound IPv4 (first entry of <see cref="GetAll"/>), or null if none.</summary>
+        public string? Get() => GetAll().FirstOrDefault();
+
+        public IReadOnlyList<string> GetAll()
         {
-            var routed = FromOutboundRoute();
-            if (routed != null) return routed;
-            return FromInterfaces();
+            var result = new List<string>();
+            var seen = new HashSet<string>();
+
+            void Add(string? ip)
+            {
+                if (!string.IsNullOrEmpty(ip) && seen.Add(ip))
+                    result.Add(ip);
+            }
+
+            // Outbound-route source IP first (public IP on a VPS, LAN IP behind NAT).
+            Add(FromOutboundRoute());
+
+            try
+            {
+                foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (ni.OperationalStatus != OperationalStatus.Up) continue;
+                    if (ni.NetworkInterfaceType == NetworkInterfaceType.Tunnel) continue;
+
+                    foreach (var ua in ni.GetIPProperties().UnicastAddresses)
+                    {
+                        var ip = ua.Address;
+                        if (ip.AddressFamily != AddressFamily.InterNetwork) continue;
+                        if (IsLinkLocal(ip)) continue; // skip 169.254.x.x noise
+                        Add(ip.ToString());
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore enumeration failures.
+            }
+
+            Add("127.0.0.1"); // always offer loopback
+            return result;
         }
 
         static string? FromOutboundRoute()
@@ -36,32 +70,7 @@ namespace ProxyRouterWpf.Proxy
             }
             catch
             {
-                // No default route / socket unavailable — fall back to interface scan.
-            }
-            return null;
-        }
-
-        static string? FromInterfaces()
-        {
-            try
-            {
-                foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
-                {
-                    if (ni.OperationalStatus != OperationalStatus.Up) continue;
-                    if (ni.NetworkInterfaceType is NetworkInterfaceType.Loopback or NetworkInterfaceType.Tunnel) continue;
-
-                    foreach (var ua in ni.GetIPProperties().UnicastAddresses)
-                    {
-                        var ip = ua.Address;
-                        if (ip.AddressFamily != AddressFamily.InterNetwork) continue;
-                        if (IPAddress.IsLoopback(ip) || IsLinkLocal(ip)) continue;
-                        return ip.ToString();
-                    }
-                }
-            }
-            catch
-            {
-                // Ignore — return null.
+                // No default route — skip.
             }
             return null;
         }
