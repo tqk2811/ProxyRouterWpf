@@ -13,40 +13,36 @@
     </WindowChrome.WindowChrome>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="44"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <!-- ===== TabControl with the tab strip hosted in the title bar ===== -->
+        <TabControl x:Name="MainTabs" SelectedIndex="{Binding SelectedTabIndex}">
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="44"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-        <!-- ===== Title bar ===== -->
-        <Grid Grid.Row="0" Background="{DynamicResource Brush.TitleBar.Background}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
-                <TextBlock Text="ProxyRouter" FontWeight="SemiBold" FontSize="14"/>
-            </StackPanel>
+                        <!-- Title bar: app name + tab headers + (reserved space for window buttons) -->
+                        <Grid Grid.Row="0" Background="{DynamicResource Brush.TitleBar.Background}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="188"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="ProxyRouter" FontWeight="SemiBold" FontSize="13"
+                                       VerticalAlignment="Center" Margin="16,0,18,0"/>
+                            <TabPanel Grid.Column="1" IsItemsHost="True" VerticalAlignment="Center"
+                                      HorizontalAlignment="Left" Margin="0"
+                                      WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        </Grid>
 
-            <StackPanel Grid.Column="1" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
-                <Button Style="{StaticResource IconButton}" Width="40" Height="40" Margin="0,0,4,0"
-                        Command="{Binding ToggleThemeCommand}" ToolTip="{Binding ThemeTooltip}">
-                    <TextBlock Text="{Binding ThemeGlyph}" FontFamily="Segoe MDL2 Assets" FontSize="15"/>
-                </Button>
-                <Button Style="{StaticResource WindowControlButton}" Click="Minimize_Click">
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE921;" FontSize="10"/>
-                </Button>
-                <Button Style="{StaticResource WindowControlButton}" Click="Maximize_Click">
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE922;" FontSize="10"/>
-                </Button>
-                <Button Style="{StaticResource WindowCloseButton}" Click="Close_Click">
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="10"/>
-                </Button>
-            </StackPanel>
-        </Grid>
+                        <!-- Selected tab content -->
+                        <ContentPresenter Grid.Row="1" ContentSource="SelectedContent" Margin="16,10,16,16"/>
+                    </Grid>
+                </ControlTemplate>
+            </TabControl.Template>
 
-        <!-- ===== Content ===== -->
-        <TabControl Grid.Row="1" Margin="16,10,16,16" SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="Proxies">
                 <views:ProxiesView DataContext="{Binding Proxies}"/>
             </TabItem>
@@ -60,5 +56,24 @@
                 <views:SettingsView DataContext="{Binding Settings}"/>
             </TabItem>
         </TabControl>
+
+        <!-- ===== Window controls (overlaid top-right, on top of the title bar) ===== -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right"
+                    Height="44" WindowChrome.IsHitTestVisibleInChrome="True">
+            <Button Style="{StaticResource IconButton}" Width="40" Height="40" Margin="0,0,4,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding ToggleThemeCommand}" ToolTip="{Binding ThemeTooltip}">
+                <TextBlock Text="{Binding ThemeGlyph}" FontFamily="Segoe MDL2 Assets" FontSize="15"/>
+            </Button>
+            <Button Style="{StaticResource WindowControlButton}" Click="Minimize_Click">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE921;" FontSize="10"/>
+            </Button>
+            <Button Style="{StaticResource WindowControlButton}" Click="Maximize_Click">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE922;" FontSize="10"/>
+            </Button>
+            <Button Style="{StaticResource WindowCloseButton}" Click="Close_Click">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="10"/>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

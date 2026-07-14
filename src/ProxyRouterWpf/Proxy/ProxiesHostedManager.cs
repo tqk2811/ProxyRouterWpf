@@ -68,12 +68,13 @@ namespace ProxyRouterWpf.Proxy
 
                 var sources = _sourceService.ListByGroup(null);
                 var configure = _configureService.Get();
-                _logger.LogInformation("Start requested SourceCount={SourceCount}, StartPort={StartPort}", sources.Count, configure.StartPort);
+                var bindAddress = IPAddress.TryParse(configure.ListenAddress, out var parsed) ? parsed : IPAddress.Any;
+                _logger.LogInformation("Start requested SourceCount={SourceCount}, StartPort={StartPort}, ListenAddress={ListenAddress}", sources.Count, configure.StartPort, bindAddress);
 
                 started = 0;
                 for (int i = 0; i < sources.Count; i++)
                 {
-                    var endpoint = new IPEndPoint(IPAddress.Any, configure.StartPort + i);
+                    var endpoint = new IPEndPoint(bindAddress, configure.StartPort + i);
                     try
                     {
                         var session = new ProxySession(

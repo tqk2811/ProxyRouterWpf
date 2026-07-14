@@ -21,6 +21,7 @@ namespace ProxyRouterWpf.Services
                 return new AppUserProxyConfigureVM
                 {
                     StartPort = c.StartPort,
+                    ListenAddress = string.IsNullOrWhiteSpace(c.ListenAddress) ? "0.0.0.0" : c.ListenAddress,
                     ProxyUserName = c.ProxyUserName,
                     ProxyPassword = c.ProxyPassword,
                     ProxySocks4UserId = c.ProxySocks4UserId,
@@ -38,6 +39,7 @@ namespace ProxyRouterWpf.Services
             {
                 var c = _store.Config.Configure;
                 c.StartPort = model.StartPort;
+                c.ListenAddress = string.IsNullOrWhiteSpace(model.ListenAddress) ? "0.0.0.0" : model.ListenAddress.Trim();
                 c.ProxyUserName = string.IsNullOrWhiteSpace(model.ProxyUserName) ? null : model.ProxyUserName.Trim();
                 c.ProxyPassword = string.IsNullOrWhiteSpace(model.ProxyPassword) ? null : model.ProxyPassword;
                 c.ProxySocks4UserId = string.IsNullOrWhiteSpace(model.ProxySocks4UserId) ? null : model.ProxySocks4UserId.Trim();

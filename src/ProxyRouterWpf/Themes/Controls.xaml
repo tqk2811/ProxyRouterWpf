@@ -5,28 +5,28 @@
     <!-- ===================== TEXTBLOCK ===================== -->
     <Style TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe UI"/>
-        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
     </Style>
 
     <Style x:Key="Heading" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe UI"/>
-        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
     </Style>
 
     <Style x:Key="Subtle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe UI"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontSize" Value="11"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
     </Style>
 
     <!-- ===================== LABEL ===================== -->
     <Style TargetType="Label">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontSize" Value="11"/>
         <Setter Property="Padding" Value="0,0,0,2"/>
     </Style>
 
@@ -36,7 +36,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Surface.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="Padding" Value="14"/>
+        <Setter Property="Padding" Value="11"/>
     </Style>
 
     <!-- ===================== BUTTON (neutral) ===================== -->
@@ -45,9 +45,9 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Control.BorderBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="12,6"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="28"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
@@ -83,10 +83,10 @@
         <Setter Property="Background" Value="{DynamicResource Brush.Accent}"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Accent.Foreground}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="14,6"/>
-        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="12,4"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="Height" Value="28"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
@@ -235,9 +235,9 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CaretBrush" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="SelectionBrush" Value="{DynamicResource Brush.Accent}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Padding" Value="8,5"/>
-        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="7,4"/>
+        <Setter Property="MinHeight" Value="28"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
@@ -273,9 +273,9 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Control.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CaretBrush" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Padding" Value="8,5"/>
-        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="7,4"/>
+        <Setter Property="MinHeight" Value="28"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -325,8 +325,8 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="Background" Value="{DynamicResource Brush.Control.Background}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Control.BorderBrush}"/>
-        <Setter Property="Height" Value="32"/>
-        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -401,7 +401,7 @@
     <!-- ===================== CHECKBOX ===================== -->
     <Style TargetType="CheckBox">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
@@ -582,10 +582,12 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Cursor" Value="Hand"/>
+        <!-- Tab strip lives inside the WindowChrome caption; keep the header clickable, not draggable. -->
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
-                    <Border x:Name="bd" CornerRadius="8" Padding="14,7" Margin="0,0,6,0" Background="Transparent">
+                    <Border x:Name="bd" CornerRadius="7" Padding="13,5" Margin="0,0,5,0" Background="Transparent">
                         <ContentPresenter ContentSource="Header" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -596,6 +598,48 @@
                             <Setter TargetName="bd" Property="Background" Value="{DynamicResource Brush.Accent}"/>
                             <Setter Property="Foreground" Value="{DynamicResource Brush.Accent.Foreground}"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===================== CONTEXT MENU / MENU ITEM ===================== -->
+    <Style TargetType="ContextMenu">
+        <Setter Property="Background" Value="{DynamicResource Brush.Surface.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Surface.BorderBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border CornerRadius="7" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="4" SnapsToDevicePixels="True">
+                        <ItemsPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="MenuItem">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border x:Name="bd" CornerRadius="5" Background="Transparent" Padding="11,6" Margin="2,1" SnapsToDevicePixels="True">
+                        <ContentPresenter ContentSource="Header" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource Brush.Control.Hover.Background}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -619,8 +663,8 @@
         <Setter Property="CanUserDeleteRows" Value="False"/>
         <Setter Property="IsReadOnly" Value="True"/>
         <Setter Property="SelectionMode" Value="Extended"/>
-        <Setter Property="RowHeight" Value="34"/>
-        <Setter Property="ColumnHeaderHeight" Value="34"/>
+        <Setter Property="RowHeight" Value="30"/>
+        <Setter Property="ColumnHeaderHeight" Value="30"/>
         <Setter Property="EnableRowVirtualization" Value="True"/>
         <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
         <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
@@ -629,7 +673,7 @@
     <Style TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="{DynamicResource Brush.Surface.Background}"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Padding" Value="10,0"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -664,7 +708,7 @@
     <Style TargetType="DataGridCell">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="FontSize" Value="12.5"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
@@ -704,8 +748,8 @@
         <Setter Property="Background" Value="{DynamicResource Brush.Control.Background}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Control.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Height" Value="32"/>
-        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DatePicker">

@@ -5,6 +5,10 @@ namespace ProxyRouterWpf.Models
     public class AppUserProxyConfigureVM
     {
         public int StartPort { get; set; } = 30000;
+
+        /// <summary>IPv4 the listeners bind to. "0.0.0.0" = all interfaces (default).</summary>
+        public string ListenAddress { get; set; } = "0.0.0.0";
+
         public string? ProxyUserName { get; set; }
         public string? ProxyPassword { get; set; }
         public string? ProxySocks4UserId { get; set; }
@@ -19,6 +23,9 @@ namespace ProxyRouterWpf.Models
     {
         [Range(10000, 65535)]
         public int StartPort { get; set; } = 30000;
+
+        /// <summary>IPv4 the listeners bind to. "0.0.0.0" = all interfaces.</summary>
+        public string ListenAddress { get; set; } = "0.0.0.0";
 
         [MaxLength(128)]
         public string? ProxyUserName { get; set; }

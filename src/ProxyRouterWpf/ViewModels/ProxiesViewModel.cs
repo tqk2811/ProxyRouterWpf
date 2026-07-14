@@ -19,6 +19,7 @@ namespace ProxyRouterWpf.ViewModels
             _svc.Manager.StateChanged += OnManagerStateChanged;
             LoadConfigFields();
             LoadLocalIps();
+            LoadListenAddresses();
             ReloadAll();
         }
 
@@ -27,6 +28,7 @@ namespace ProxyRouterWpf.ViewModels
 
         // ---- Server configure fields (bound two-way) ----
         [ObservableProperty] int startPort = 30000;
+        [ObservableProperty] string listenAddress = "0.0.0.0";
         [ObservableProperty] string? proxyUserName;
         [ObservableProperty] string? proxyPassword;
         [ObservableProperty] string? proxySocks4UserId;
@@ -41,8 +43,11 @@ namespace ProxyRouterWpf.ViewModels
         [ObservableProperty] string outputFormat = "http_socks5";
         [ObservableProperty] string outputPreview = string.Empty;
 
-        /// <summary>All IPv4 addresses bound to this machine (listeners bind to 0.0.0.0).</summary>
+        /// <summary>All IPv4 addresses bound to this machine (for building the copy-to-clipboard output).</summary>
         public ObservableCollection<string> LocalIps { get; } = new();
+
+        /// <summary>Addresses the listeners can bind to: "0.0.0.0" (all) + each LAN/host IPv4.</summary>
+        public ObservableCollection<string> ListenAddresses { get; } = new();
 
         public bool CanEdit => !IsRunning;
 
@@ -67,6 +72,7 @@ namespace ProxyRouterWpf.ViewModels
         {
             var c = _svc.Configure.Get();
             StartPort = c.StartPort;
+            ListenAddress = string.IsNullOrWhiteSpace(c.ListenAddress) ? "0.0.0.0" : c.ListenAddress;
             ProxyUserName = c.ProxyUserName;
             ProxyPassword = c.ProxyPassword;
             ProxySocks4UserId = c.ProxySocks4UserId;
@@ -138,6 +144,7 @@ namespace ProxyRouterWpf.ViewModels
             _svc.Configure.Update(new UpdateProxyConfigureVM
             {
                 StartPort = StartPort,
+                ListenAddress = string.IsNullOrWhiteSpace(ListenAddress) ? "0.0.0.0" : ListenAddress,
                 ProxyUserName = ProxyUserName,
                 ProxyPassword = ProxyPassword,
                 ProxySocks4UserId = ProxySocks4UserId,
@@ -199,6 +206,20 @@ namespace ProxyRouterWpf.ViewModels
             SelectedIp = (current != null && LocalIps.Contains(current)) ? current : LocalIps.FirstOrDefault();
         }
 
+        void LoadListenAddresses()
+        {
+            var current = ListenAddress;
+            ListenAddresses.Clear();
+            ListenAddresses.Add("0.0.0.0"); // bind all interfaces
+            foreach (var ip in _svc.LocalIp.GetAll())
+                if (!ListenAddresses.Contains(ip))
+                    ListenAddresses.Add(ip);
+            // keep the configured address selectable even if that NIC is currently gone
+            if (!string.IsNullOrEmpty(current) && !ListenAddresses.Contains(current))
+                ListenAddresses.Add(current);
+            ListenAddress = (!string.IsNullOrEmpty(current) && ListenAddresses.Contains(current)) ? current : "0.0.0.0";
+        }
+
         void BuildOutputPreview()
         {
             var lines = BuildOutputLines();
@@ -244,7 +265,7 @@ namespace ProxyRouterWpf.ViewModels
         }
 
         [RelayCommand]
-        void Refresh() { LoadLocalIps(); ReloadAll(); }
+        void Refresh() { LoadLocalIps(); LoadListenAddresses(); ReloadAll(); }
 
         // ---------- Source CRUD (called from view code-behind) ----------
         public void AddSourcesBulk(Guid? groupId, ProxyType proxyType, string lines)

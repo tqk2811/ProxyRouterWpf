@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using ProxyRouterWpf.Enums;
 using ProxyRouterWpf.Models;
 using ProxyRouterWpf.ViewModels;
@@ -29,6 +30,18 @@ namespace ProxyRouterWpf.Views
 
         static List<Guid> SelectedIds(DataGrid grid)
             => grid.SelectedItems.Cast<ProxySourceRow>().Select(r => r.Id).ToList();
+
+        // Right-clicking a row selects it (unless it is already part of a multi-selection) so the
+        // context menu acts on the row under the cursor.
+        void Row_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow row && !row.IsSelected)
+            {
+                if (ItemsControl.ItemsControlFromItemContainer(row) is DataGrid grid)
+                    grid.UnselectAll();
+                row.IsSelected = true;
+            }
+        }
 
         // ---------------- Ungrouped sources ----------------
         void AddUngrouped_Click(object sender, RoutedEventArgs e)
