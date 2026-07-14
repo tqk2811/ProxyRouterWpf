@@ -26,9 +26,6 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
                 <TextBlock Text="ProxyRouter" FontWeight="SemiBold" FontSize="14"/>
-                <Border Background="{DynamicResource Brush.Accent.Subtle}" CornerRadius="5" Padding="7,1" Margin="10,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Text="WPF" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Accent}"/>
-                </Border>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
