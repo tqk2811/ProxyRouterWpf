@@ -39,6 +39,11 @@
 
         <!-- Grid -->
         <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0">
+          <Grid>
+            <TextBlock Text="Chưa có log tunnel. Bật Proxy ở tab Proxies và tạo lưu lượng qua proxy để xem log ở đây."
+                       HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="420"
+                       TextAlignment="Center" Style="{StaticResource Subtle}"
+                       Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}"/>
             <DataGrid x:Name="LogGrid" ItemsSource="{Binding Items}" CanUserSortColumns="True"
                       Sorting="LogGrid_Sorting" MouseDoubleClick="LogGrid_DoubleClick" BorderThickness="0">
                 <DataGrid.Columns>
@@ -104,6 +109,7 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+          </Grid>
         </Border>
 
         <!-- Footer paging -->

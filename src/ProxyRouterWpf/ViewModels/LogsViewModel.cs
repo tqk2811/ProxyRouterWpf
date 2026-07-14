@@ -41,10 +41,12 @@ namespace ProxyRouterWpf.ViewModels
                 ProxyTypeOptions.Add(new FilterOption<ProxyType> { Label = t.ToString(), Value = t });
             SelectedProxyType = ProxyTypeOptions[0];
 
-            _autoTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
+            _autoTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
             _autoTimer.Tick += (_, _) => Reload();
 
             Reload();
+            if (AutoRefresh)
+                _autoTimer.Start();
         }
 
         public List<int> PageSizeOptions { get; } = new() { 25, 50, 100, 200 };
@@ -65,7 +67,8 @@ namespace ProxyRouterWpf.ViewModels
         [ObservableProperty] int totalPages = 1;
         [ObservableProperty] string pageInfo = "0 log";
 
-        [ObservableProperty] bool autoRefresh;
+        [ObservableProperty] bool autoRefresh = true;
+        [ObservableProperty] bool isEmpty = true;
 
         ProxyTunnelLogSortBy _sortBy = ProxyTunnelLogSortBy.EndAt;
         bool _sortDesc = true;
@@ -98,6 +101,7 @@ namespace ProxyRouterWpf.ViewModels
             var res = _svc.TunnelLogs.List(req);
             Items.Clear();
             foreach (var it in res.Items) Items.Add(it);
+            IsEmpty = res.TotalCount == 0;
             TotalCount = res.TotalCount;
             TotalPages = Math.Max(1, (int)Math.Ceiling(res.TotalCount / (double)res.PageSize));
             if (Page > TotalPages) { Page = TotalPages; }
