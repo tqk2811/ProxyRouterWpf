@@ -30,7 +30,7 @@ namespace ProxyRouterWpf.Configuration
         public TunnelLogChannelConsumer LogConsumer { get; }
 
         public ProxiesHostedManager Manager { get; }
-        public PublicIpV4Provider PublicIp { get; }
+        public LocalIpV4Provider LocalIp { get; }
 
         public NetworkBandwidthCache BandwidthCache { get; }
         public NetworkBandwidthSampler BandwidthSampler { get; }
@@ -52,7 +52,7 @@ namespace ProxyRouterWpf.Configuration
             TunnelLogs = new ProxyTunnelLogService(LogStore);
             LogConsumer = new TunnelLogChannelConsumer(EventLog, LogStore, TrafficCache);
 
-            PublicIp = new PublicIpV4Provider();
+            LocalIp = new LocalIpV4Provider();
             Manager = new ProxiesHostedManager(Sources, Configure, Filters, TrafficCache, EventLog, LoggerFactory);
 
             BandwidthCache = new NetworkBandwidthCache(120);

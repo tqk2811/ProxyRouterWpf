@@ -18,8 +18,8 @@ namespace ProxyRouterWpf.ViewModels
             _svc = svc;
             _svc.Manager.StateChanged += OnManagerStateChanged;
             LoadConfigFields();
+            LocalIpText = _svc.LocalIp.Get();
             ReloadAll();
-            _ = RefreshPublicIpAsync();
         }
 
         /// <summary>Called by the shell to navigate to the Logs tab filtered by a picked source.</summary>
@@ -37,7 +37,7 @@ namespace ProxyRouterWpf.ViewModels
         // ---- Runtime ----
         [ObservableProperty] bool isRunning;
         [ObservableProperty] string statusText = "Đã dừng";
-        [ObservableProperty] string? publicIpText;
+        [ObservableProperty] string? localIpText;
         [ObservableProperty] string outputFormat = "http_socks5";
         [ObservableProperty] string outputPreview = string.Empty;
 
@@ -183,18 +183,9 @@ namespace ProxyRouterWpf.ViewModels
                 MessageBox.Show("Không khởi động được listener nào (cổng có thể đang bị chiếm).", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
-        // ---------- Public IP + output preview ----------
-        async Task RefreshPublicIpAsync()
-        {
-            var ip = await _svc.PublicIp.GetAsync();
-            Application.Current?.Dispatcher.Invoke(() =>
-            {
-                PublicIpText = ip;
-                BuildOutputPreview();
-            });
-        }
-
+        // ---------- Local IP + output preview ----------
         partial void OnOutputFormatChanged(string value) => BuildOutputPreview();
+        partial void OnLocalIpTextChanged(string? value) => BuildOutputPreview();
 
         void BuildOutputPreview()
         {
@@ -204,7 +195,7 @@ namespace ProxyRouterWpf.ViewModels
 
         List<string> BuildOutputLines()
         {
-            var ip = string.IsNullOrEmpty(PublicIpText) ? "0.0.0.0" : PublicIpText!;
+            var ip = string.IsNullOrEmpty(LocalIpText) ? "0.0.0.0" : LocalIpText!;
             int count = IsRunning ? _activeIds.Count : UngroupedSources.Count;
             var result = new List<string>();
             bool socks4 = string.Equals(OutputFormat, "socks4", StringComparison.OrdinalIgnoreCase);

@@ -85,7 +85,7 @@
                         <Button Content="Copy" Command="{Binding CopyOutputCommand}" Margin="8,0,0,0" Height="28"/>
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource Subtle}" Margin="0,6,0,4"
-                               Text="{Binding PublicIpText, StringFormat='Public IP: {0}', TargetNullValue='Public IP: (không xác định)'}"/>
+                               Text="{Binding LocalIpText, StringFormat='IP (LAN/VPS): {0}', TargetNullValue='IP (LAN/VPS): (không xác định)'}"/>
                     <Border Style="{StaticResource Card}" Padding="8" Background="{DynamicResource Brush.Surface.Alt}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <TextBox Text="{Binding OutputPreview, Mode=OneWay}" IsReadOnly="True" BorderThickness="0"
