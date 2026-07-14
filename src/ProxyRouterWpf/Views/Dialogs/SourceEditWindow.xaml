@@ -10,14 +10,14 @@
     <Border BorderBrush="{DynamicResource Brush.Surface.BorderBrush}" BorderThickness="1">
         <DockPanel>
             <Border DockPanel.Dock="Top" Background="{DynamicResource Brush.TitleBar.Background}" Padding="16,12" MouseLeftButtonDown="Header_Drag">
-                <TextBlock Text="Sửa proxy" FontWeight="SemiBold" FontSize="14"/>
+                <TextBlock Text="{DynamicResource Str.Dialog.Source.EditTitle}" FontWeight="SemiBold" FontSize="14"/>
             </Border>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="16">
-                <Button Content="Huỷ" Click="Cancel_Click" MinWidth="84"/>
-                <Button Content="Lưu" Style="{StaticResource AccentButton}" Click="Ok_Click" MinWidth="84" Margin="8,0,0,0"/>
+                <Button Content="{DynamicResource Str.Common.Cancel}" Click="Cancel_Click" MinWidth="84"/>
+                <Button Content="{DynamicResource Str.Common.Save}" Style="{StaticResource AccentButton}" Click="Ok_Click" MinWidth="84" Margin="8,0,0,0"/>
             </StackPanel>
             <StackPanel Margin="16,14">
-                <Label Content="Nhóm"/>
+                <Label Content="{DynamicResource Str.Dialog.Source.Group}"/>
                 <ComboBox x:Name="GroupBox" DisplayMemberPath="Label"/>
                 <Grid Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
@@ -26,15 +26,15 @@
                         <ColumnDefinition Width="120"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <Label Content="Loại"/>
+                        <Label Content="{DynamicResource Str.Dialog.Source.Type}"/>
                         <ComboBox x:Name="TypeBox"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <Label Content="Port"/>
+                        <Label Content="{DynamicResource Str.Dialog.Source.Port}"/>
                         <TextBox x:Name="PortBox"/>
                     </StackPanel>
                 </Grid>
-                <Label Content="Address" Margin="0,10,0,0"/>
+                <Label Content="{DynamicResource Str.Dialog.Source.Address}" Margin="0,10,0,0"/>
                 <TextBox x:Name="AddressBox"/>
                 <Grid Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
@@ -43,11 +43,11 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <Label Content="Username"/>
+                        <Label Content="{DynamicResource Str.Dialog.Source.Username}"/>
                         <TextBox x:Name="UserBox"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <Label Content="Password"/>
+                        <Label Content="{DynamicResource Str.Dialog.Source.Password}"/>
                         <TextBox x:Name="PassBox"/>
                     </StackPanel>
                 </Grid>

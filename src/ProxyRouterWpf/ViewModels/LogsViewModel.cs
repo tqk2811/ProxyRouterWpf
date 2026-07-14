@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ProxyRouterWpf.Configuration;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
 
 namespace ProxyRouterWpf.ViewModels
@@ -25,21 +26,9 @@ namespace ProxyRouterWpf.ViewModels
         {
             _svc = svc;
 
-            OutcomeOptions = new()
-            {
-                new FilterOption<ProxyTunnelOutcome> { Label = "Tất cả outcome", Value = null },
-            };
-            foreach (ProxyTunnelOutcome o in Enum.GetValues<ProxyTunnelOutcome>())
-                OutcomeOptions.Add(new FilterOption<ProxyTunnelOutcome> { Label = o.ToString(), Value = o });
-            SelectedOutcome = OutcomeOptions[0];
-
-            ProxyTypeOptions = new()
-            {
-                new FilterOption<ProxyType> { Label = "Tất cả loại", Value = null },
-            };
-            foreach (ProxyType t in Enum.GetValues<ProxyType>())
-                ProxyTypeOptions.Add(new FilterOption<ProxyType> { Label = t.ToString(), Value = t });
-            SelectedProxyType = ProxyTypeOptions[0];
+            OutcomeOptions = new();
+            ProxyTypeOptions = new();
+            BuildFilterOptions();
 
             _autoTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
             _autoTimer.Tick += (_, _) => Reload();
@@ -49,9 +38,34 @@ namespace ProxyRouterWpf.ViewModels
                 _autoTimer.Start();
         }
 
+        /// <summary>(Re)builds the localized filter dropdown options, preserving the current selection by value.</summary>
+        void BuildFilterOptions()
+        {
+            var prevOutcome = SelectedOutcome?.Value;
+            OutcomeOptions.Clear();
+            OutcomeOptions.Add(new FilterOption<ProxyTunnelOutcome> { Label = Loc.S("Str.Logs.AllOutcome"), Value = null });
+            foreach (ProxyTunnelOutcome o in Enum.GetValues<ProxyTunnelOutcome>())
+                OutcomeOptions.Add(new FilterOption<ProxyTunnelOutcome> { Label = LocalizationManager.EnumText(o), Value = o });
+            SelectedOutcome = OutcomeOptions.FirstOrDefault(x => x.Value.Equals(prevOutcome)) ?? OutcomeOptions[0];
+
+            var prevType = SelectedProxyType?.Value;
+            ProxyTypeOptions.Clear();
+            ProxyTypeOptions.Add(new FilterOption<ProxyType> { Label = Loc.S("Str.Logs.AllType"), Value = null });
+            foreach (ProxyType t in Enum.GetValues<ProxyType>())
+                ProxyTypeOptions.Add(new FilterOption<ProxyType> { Label = LocalizationManager.EnumText(t), Value = t });
+            SelectedProxyType = ProxyTypeOptions.FirstOrDefault(x => x.Value.Equals(prevType)) ?? ProxyTypeOptions[0];
+        }
+
+        /// <summary>Rebuild localized option labels, re-run the query (regenerates PageInfo/items) after a language change.</summary>
+        public void OnLanguageChanged()
+        {
+            BuildFilterOptions();
+            Reload();
+        }
+
         public List<int> PageSizeOptions { get; } = new() { 25, 50, 100, 200 };
-        public List<FilterOption<ProxyTunnelOutcome>> OutcomeOptions { get; }
-        public List<FilterOption<ProxyType>> ProxyTypeOptions { get; }
+        public ObservableCollection<FilterOption<ProxyTunnelOutcome>> OutcomeOptions { get; }
+        public ObservableCollection<FilterOption<ProxyType>> ProxyTypeOptions { get; }
 
         [ObservableProperty] FilterOption<ProxyTunnelOutcome>? selectedOutcome;
         [ObservableProperty] FilterOption<ProxyType>? selectedProxyType;
@@ -105,7 +119,7 @@ namespace ProxyRouterWpf.ViewModels
             TotalCount = res.TotalCount;
             TotalPages = Math.Max(1, (int)Math.Ceiling(res.TotalCount / (double)res.PageSize));
             if (Page > TotalPages) { Page = TotalPages; }
-            PageInfo = $"Trang {Page}/{TotalPages} · {TotalCount} log · giữ tối đa {_svc.LogStore.Capacity}";
+            PageInfo = Loc.F("Str.Logs.PageInfo", Page, TotalPages, TotalCount, _svc.LogStore.Capacity);
         }
 
         [RelayCommand]
@@ -137,7 +151,7 @@ namespace ProxyRouterWpf.ViewModels
         [RelayCommand]
         void ClearAll()
         {
-            if (MessageBox.Show("Xoá toàn bộ log trong RAM?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            if (MessageBox.Show(Loc.S("Str.Logs.ClearAllConfirm"), Loc.S("Str.Common.Confirm"), MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
             _svc.TunnelLogs.Clear();
             Page = 1;
             Reload();

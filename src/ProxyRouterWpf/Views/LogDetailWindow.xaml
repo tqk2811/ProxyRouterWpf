@@ -1,7 +1,7 @@
 <Window x:Class="ProxyRouterWpf.Views.LogDetailWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Chi tiết tunnel" Width="560" Height="640"
+        Title="{DynamicResource Str.LogDetail.Title}" Width="560" Height="640"
         WindowStyle="None" ResizeMode="CanResizeWithGrip" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource Brush.Surface.Background}"
@@ -11,7 +11,7 @@
         <DockPanel>
             <Border DockPanel.Dock="Top" Background="{DynamicResource Brush.TitleBar.Background}" Padding="16,12" MouseLeftButtonDown="Header_Drag">
                 <DockPanel>
-                    <TextBlock Text="Chi tiết tunnel" FontWeight="SemiBold" FontSize="14"/>
+                    <TextBlock Text="{DynamicResource Str.LogDetail.Title}" FontWeight="SemiBold" FontSize="14"/>
                     <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource IconButton}" Click="Close_Click">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="10"/>
                     </Button>
@@ -20,21 +20,21 @@
 
             <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="Tunnel" Margin="0,0,0,8"/>
+                    <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="{DynamicResource Str.LogDetail.Tunnel}" Margin="0,0,0,8"/>
                     <StackPanel x:Name="TunnelFields"/>
 
                     <StackPanel x:Name="AuthSection" Margin="0,14,0,0" Visibility="{Binding AuthUserName, Converter={StaticResource NotEmptyToVis}}">
-                        <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="Xác thực" Margin="0,0,0,8"/>
+                        <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="{DynamicResource Str.LogDetail.Auth}" Margin="0,0,0,8"/>
                         <StackPanel x:Name="AuthFields"/>
                     </StackPanel>
 
                     <StackPanel x:Name="RoutingSection" Margin="0,14,0,0">
-                        <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="Định tuyến" Margin="0,0,0,8"/>
+                        <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="{DynamicResource Str.LogDetail.Routing}" Margin="0,0,0,8"/>
                         <StackPanel x:Name="RoutingFields"/>
                     </StackPanel>
 
                     <StackPanel x:Name="ErrorSection" Margin="0,14,0,0" Visibility="{Binding ErrorMessage, Converter={StaticResource NotEmptyToVis}}">
-                        <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="Lỗi" Margin="0,0,0,8" Foreground="{DynamicResource Brush.Danger}"/>
+                        <TextBlock Style="{StaticResource Heading}" FontSize="14" Text="{DynamicResource Str.LogDetail.Error}" Margin="0,0,0,8" Foreground="{DynamicResource Brush.Danger}"/>
                         <Border Style="{StaticResource Card}" Background="{DynamicResource Brush.Surface.Alt}">
                             <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.Danger}" FontFamily="Consolas"/>
                         </Border>

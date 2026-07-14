@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ProxyRouterWpf.Helpers;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
 
 namespace ProxyRouterWpf.Views
@@ -23,26 +24,26 @@ namespace ProxyRouterWpf.Views
             AddRow(TunnelFields, "Start", Local(x.StartAt));
             AddRow(TunnelFields, "End", Local(x.EndAt));
             AddRow(TunnelFields, "Duration", dur.ToString(@"hh\:mm\:ss\.fff"));
-            AddRow(TunnelFields, "Outcome", x.Outcome.ToString());
+            AddRow(TunnelFields, "Outcome", LocalizationManager.EnumText(x.Outcome));
             AddRow(TunnelFields, "Client", $"{x.ClientIPAddress}:{x.ClientPort}");
             AddRow(TunnelFields, "Server", $"{x.ServerIPAddress}:{x.ServerPort}");
-            AddRow(TunnelFields, "Protocol", x.ClientProtocol?.ToString() ?? "—");
+            AddRow(TunnelFields, "Protocol", LocalizationManager.EnumText(x.ClientProtocol));
             AddRow(TunnelFields, "Target", x.TargetHost == null ? "—" : $"{x.TargetHost}:{x.TargetPort}");
             AddRow(TunnelFields, "Upload", $"{BytesFormatter.FormatBytes(x.TotalBytesUpload)}  ({x.TotalBytesUpload:N0} B)");
             AddRow(TunnelFields, "Download", $"{BytesFormatter.FormatBytes(x.TotalBytesDownload)}  ({x.TotalBytesDownload:N0} B)");
             if (x.RejectReason.HasValue)
-                AddRow(TunnelFields, "RejectReason", x.RejectReason.ToString()!);
+                AddRow(TunnelFields, "RejectReason", LocalizationManager.EnumText(x.RejectReason.Value));
 
-            AddRow(AuthFields, "Method", x.AuthMethod?.ToString() ?? "—");
+            AddRow(AuthFields, "Method", LocalizationManager.EnumText(x.AuthMethod));
             AddRow(AuthFields, "Username", x.AuthUserName ?? "—");
             if (!string.IsNullOrEmpty(x.AuthPassword))
                 AddRow(AuthFields, "Password", x.AuthPassword!, danger: true);
 
-            AddRow(RoutingFields, "Decision", x.RoutingDecision?.ToString() ?? "—");
-            AddRow(RoutingFields, "Matched filter", x.MatchedFilterType == null ? "—" : $"[{x.MatchedFilterType}] {x.MatchedFilterPattern}");
+            AddRow(RoutingFields, "Decision", x.RoutingDecision == null ? "—" : LocalizationManager.EnumText(x.RoutingDecision.Value));
+            AddRow(RoutingFields, "Matched filter", x.MatchedFilterType == null ? "—" : $"[{LocalizationManager.EnumText(x.MatchedFilterType.Value)}] {x.MatchedFilterPattern}");
             AddRow(RoutingFields, "Group", x.MatchedGroupName ?? "—");
-            AddRow(RoutingFields, "Picked source", x.PickedSourceAddress == null ? "Direct (không upstream)" : $"{x.PickedSourceAddress}:{x.PickedSourcePort}");
-            AddRow(RoutingFields, "Picked type", x.PickedSourceProxyType?.ToString() ?? "—");
+            AddRow(RoutingFields, "Picked source", x.PickedSourceAddress == null ? Loc.S("Str.LogDetail.Direct") : $"{x.PickedSourceAddress}:{x.PickedSourcePort}");
+            AddRow(RoutingFields, "Picked type", LocalizationManager.EnumText(x.PickedSourceProxyType));
             AddRow(RoutingFields, "Picked user", x.PickedSourceUserName ?? "—");
         }
 

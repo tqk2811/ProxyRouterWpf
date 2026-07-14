@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 
 namespace ProxyRouterWpf.Views.Dialogs
 {
@@ -15,7 +16,7 @@ namespace ProxyRouterWpf.Views.Dialogs
             MatchModeBox.ItemsSource = Enum.GetValues<ProxySourceGroupMatchMode>();
             MatchModeBox.SelectedItem = mode;
             NameBox.Text = name ?? string.Empty;
-            TitleText.Text = name == null ? "Thêm nhóm" : "Sửa nhóm";
+            TitleText.Text = Loc.S(name == null ? "Str.Dialog.Group.AddTitle" : "Str.Dialog.Group.EditTitle");
         }
 
         void Header_Drag(object sender, MouseButtonEventArgs e) { if (e.ButtonState == MouseButtonState.Pressed) DragMove(); }
@@ -25,7 +26,7 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             if (string.IsNullOrWhiteSpace(NameBox.Text))
             {
-                MessageBox.Show("Nhập tên nhóm.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Dialog.Group.NameRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             GroupName = NameBox.Text.Trim();

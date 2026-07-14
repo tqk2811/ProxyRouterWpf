@@ -2,6 +2,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ProxyRouterWpf.Configuration;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Themes;
 
 namespace ProxyRouterWpf.ViewModels
@@ -16,11 +17,14 @@ namespace ProxyRouterWpf.ViewModels
             var s = _svc.Config.Config.Settings;
             logCapacity = s.LogCapacity;
             selectedTheme = ThemeManager.Parse(s.Theme);
+            selectedLanguage = LocalizationManager.Parse(s.Language);
         }
 
         public List<ThemeMode> ThemeOptions { get; } = new() { ThemeMode.System, ThemeMode.Light, ThemeMode.Dark };
+        public List<AppLanguage> LanguageOptions { get; } = new() { AppLanguage.System, AppLanguage.English, AppLanguage.Vietnamese };
 
         [ObservableProperty] ThemeMode selectedTheme;
+        [ObservableProperty] AppLanguage selectedLanguage;
         [ObservableProperty] int logCapacity;
 
         partial void OnSelectedThemeChanged(ThemeMode value)
@@ -29,6 +33,13 @@ namespace ProxyRouterWpf.ViewModels
             _svc.Config.Config.Settings.Theme = value.ToString();
             _svc.Config.Save();
             ThemeChanged?.Invoke();
+        }
+
+        partial void OnSelectedLanguageChanged(AppLanguage value)
+        {
+            LocalizationManager.Apply(value);
+            _svc.Config.Config.Settings.Language = value.ToString();
+            _svc.Config.Save();
         }
 
         /// <summary>Raised after the theme changes so the shell can refresh its glyph.</summary>
@@ -43,7 +54,7 @@ namespace ProxyRouterWpf.ViewModels
             var s = _svc.Config.Config.Settings;
             s.LogCapacity = cap;
             _svc.Config.Save();
-            MessageBox.Show("Đã lưu cài đặt.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(Loc.S("Str.Settings.Saved"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

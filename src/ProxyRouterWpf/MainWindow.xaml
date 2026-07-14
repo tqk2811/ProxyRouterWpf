@@ -28,7 +28,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="188"/>
+                                <ColumnDefinition Width="336"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="ProxyRouter" FontWeight="SemiBold" FontSize="13"
                                        VerticalAlignment="Center" Margin="16,0,18,0"/>
@@ -43,16 +43,16 @@
                 </ControlTemplate>
             </TabControl.Template>
 
-            <TabItem Header="Proxies">
+            <TabItem Header="{DynamicResource Str.Tab.Proxies}">
                 <views:ProxiesView DataContext="{Binding Proxies}"/>
             </TabItem>
-            <TabItem Header="Logs">
+            <TabItem Header="{DynamicResource Str.Tab.Logs}">
                 <views:LogsView DataContext="{Binding Logs}"/>
             </TabItem>
-            <TabItem Header="Bandwidth">
+            <TabItem Header="{DynamicResource Str.Tab.Bandwidth}">
                 <views:BandwidthView DataContext="{Binding Bandwidth}"/>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem Header="{DynamicResource Str.Tab.Settings}">
                 <views:SettingsView DataContext="{Binding Settings}"/>
             </TabItem>
         </TabControl>
@@ -60,6 +60,16 @@
         <!-- ===== Window controls (overlaid top-right, on top of the title bar) ===== -->
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right"
                     Height="44" WindowChrome.IsHitTestVisibleInChrome="True">
+            <ComboBox Width="140" Height="26" VerticalAlignment="Center" Margin="0,0,8,0"
+                      ItemsSource="{Binding Settings.LanguageOptions}"
+                      SelectedItem="{Binding Settings.SelectedLanguage}"
+                      ToolTip="{DynamicResource Str.Settings.Language}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource LangDisplay}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
             <Button Style="{StaticResource IconButton}" Width="40" Height="40" Margin="0,0,4,0"
                     VerticalAlignment="Center"
                     Command="{Binding ToggleThemeCommand}" ToolTip="{Binding ThemeTooltip}">

@@ -1,5 +1,6 @@
 using System.Windows;
 using ProxyRouterWpf.Configuration;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Themes;
 using ProxyRouterWpf.ViewModels;
 
@@ -16,6 +17,7 @@ namespace ProxyRouterWpf
             _services = new AppServices();
             _services.StartBackground();
 
+            LocalizationManager.Apply(LocalizationManager.Parse(_services.Config.Config.Settings.Language));
             ThemeManager.Apply(ThemeManager.Parse(_services.Config.Config.Settings.Theme));
 
             var vm = new MainViewModel(_services);

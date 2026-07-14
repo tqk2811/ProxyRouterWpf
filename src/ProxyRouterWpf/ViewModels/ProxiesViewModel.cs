@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ProxyRouterWpf.Configuration;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
 using ProxyRouterWpf.Services;
 
@@ -38,7 +39,7 @@ namespace ProxyRouterWpf.ViewModels
 
         // ---- Runtime ----
         [ObservableProperty] bool isRunning;
-        [ObservableProperty] string statusText = "Đã dừng";
+        [ObservableProperty] string statusText = Loc.S("Str.Proxies.Stopped");
         [ObservableProperty] string? selectedIp;
         [ObservableProperty] string outputFormat = "http_socks5";
         [ObservableProperty] string outputPreview = string.Empty;
@@ -68,6 +69,9 @@ namespace ProxyRouterWpf.ViewModels
 
         void OnManagerStateChanged() => Application.Current?.Dispatcher.Invoke(RefreshRuntime);
 
+        /// <summary>Rebuild localized rows and status text after a UI language change.</summary>
+        public void OnLanguageChanged() => ReloadAll();
+
         void LoadConfigFields()
         {
             var c = _svc.Configure.Get();
@@ -85,7 +89,7 @@ namespace ProxyRouterWpf.ViewModels
         {
             _activeIds = _svc.Manager.GetActiveSourceIds().ToHashSet();
             IsRunning = _svc.Manager.IsRunning;
-            StatusText = IsRunning ? $"Đang chạy · {_activeIds.Count} listener" : "Đã dừng";
+            StatusText = IsRunning ? Loc.F("Str.Proxies.Running", _activeIds.Count) : Loc.S("Str.Proxies.Stopped");
             ReloadSourceRows();
             BuildOutputPreview();
         }
@@ -94,7 +98,7 @@ namespace ProxyRouterWpf.ViewModels
         {
             _activeIds = _svc.Manager.GetActiveSourceIds().ToHashSet();
             IsRunning = _svc.Manager.IsRunning;
-            StatusText = IsRunning ? $"Đang chạy · {_activeIds.Count} listener" : "Đã dừng";
+            StatusText = IsRunning ? Loc.F("Str.Proxies.Running", _activeIds.Count) : Loc.S("Str.Proxies.Stopped");
             ReloadGroups();
             ReloadSourceRows();
             BuildOutputPreview();
@@ -138,7 +142,7 @@ namespace ProxyRouterWpf.ViewModels
         {
             if (StartPort < 10000 || StartPort > 65535)
             {
-                MessageBox.Show("Start Port phải trong khoảng 10000..65535.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Proxies.StartPortRange"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
             _svc.Configure.Update(new UpdateProxyConfigureVM
@@ -160,7 +164,7 @@ namespace ProxyRouterWpf.ViewModels
         void SaveConfigure()
         {
             if (SaveConfig())
-                StatusText = IsRunning ? StatusText : "Đã lưu cấu hình";
+                StatusText = IsRunning ? StatusText : Loc.S("Str.Proxies.ConfigSaved");
         }
 
         // ---------- Toggle ----------
@@ -176,21 +180,21 @@ namespace ProxyRouterWpf.ViewModels
 
             if (!IsHttpEnabled && !IsSocks4Enabled && !IsSocks5Enabled)
             {
-                MessageBox.Show("Bật ít nhất một giao thức (HTTP/SOCKS4/SOCKS5) trước khi khởi động.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Proxies.EnableProtocol"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             if (!SaveConfig())
                 return;
             if (_svc.Sources.ListByGroup(null).Count == 0)
             {
-                MessageBox.Show("Chưa có proxy nguồn nào (Ungrouped). Thêm proxy trước khi khởi động.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Proxies.NoUngrouped"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             int started = await Task.Run(() => _svc.Manager.Start());
             RefreshRuntime();
             if (started == 0)
-                MessageBox.Show("Không khởi động được listener nào (cổng có thể đang bị chiếm).", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Proxies.NoListenerStarted"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         // ---------- Local IP + output preview ----------
@@ -223,7 +227,7 @@ namespace ProxyRouterWpf.ViewModels
         void BuildOutputPreview()
         {
             var lines = BuildOutputLines();
-            OutputPreview = lines.Count == 0 ? "(chưa có proxy)" : string.Join(Environment.NewLine, lines);
+            OutputPreview = lines.Count == 0 ? Loc.S("Str.Proxies.NoProxyOutput") : string.Join(Environment.NewLine, lines);
         }
 
         List<string> BuildOutputLines()
@@ -257,10 +261,10 @@ namespace ProxyRouterWpf.ViewModels
             var lines = BuildOutputLines();
             if (lines.Count == 0)
             {
-                MessageBox.Show("Chưa có proxy để copy.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(Loc.S("Str.Proxies.NoProxyToCopy"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            try { Clipboard.SetText(string.Join(Environment.NewLine, lines)); StatusText = $"Đã copy {lines.Count} dòng"; }
+            try { Clipboard.SetText(string.Join(Environment.NewLine, lines)); StatusText = Loc.F("Str.Proxies.Copied", lines.Count); }
             catch { /* clipboard busy */ }
         }
 
@@ -274,8 +278,8 @@ namespace ProxyRouterWpf.ViewModels
             {
                 var r = _svc.Sources.BulkCreate(new BulkCreateProxySourceVM { GroupId = groupId, ProxyType = proxyType, Lines = lines });
                 ReloadAll();
-                var msg = $"Đã thêm {r.Created}, bỏ qua {r.Skipped}." + (r.Errors.Count > 0 ? "\n\nLỗi:\n" + string.Join("\n", r.Errors.Take(20)) : "");
-                MessageBox.Show(msg, "Thêm proxy", MessageBoxButton.OK, r.Errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
+                var msg = Loc.F("Str.Proxies.AddedSkipped", r.Created, r.Skipped) + (r.Errors.Count > 0 ? Loc.S("Str.Proxies.ErrorsPrefix") + string.Join("\n", r.Errors.Take(20)) : "");
+                MessageBox.Show(msg, Loc.S("Str.Proxies.AddProxyCaption"), MessageBoxButton.OK, r.Errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
             }
             catch (Exception ex) { ShowError(ex); }
         }
@@ -289,7 +293,7 @@ namespace ProxyRouterWpf.ViewModels
         public void DeleteSources(IReadOnlyList<Guid> ids)
         {
             if (ids.Count == 0) return;
-            if (MessageBox.Show($"Xoá {ids.Count} proxy?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+            if (MessageBox.Show(Loc.F("Str.Proxies.DeleteProxiesConfirm", ids.Count), Loc.S("Str.Common.Confirm"), MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
             try { _svc.Sources.BulkDelete(new BulkDeleteProxySourceVM { Ids = ids.ToList() }); ReloadAll(); }
             catch (Exception ex) { ShowError(ex); }
         }
@@ -316,7 +320,7 @@ namespace ProxyRouterWpf.ViewModels
 
         public void DeleteGroup(Guid id)
         {
-            if (MessageBox.Show("Xoá group này? (Proxy và filter thuộc group cũng bị xoá)", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            if (MessageBox.Show(Loc.S("Str.Proxies.DeleteGroupConfirm"), Loc.S("Str.Common.Confirm"), MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
             try { _svc.Groups.Delete(id); ReloadAll(); }
             catch (Exception ex) { ShowError(ex); }
         }
@@ -346,8 +350,8 @@ namespace ProxyRouterWpf.ViewModels
             {
                 var r = _svc.Filters.BulkCreate(new BulkCreateProxySourceGroupFilterVM { GroupId = groupId, FilterType = type, TrafficDirection = dir, IsNot = isNot, Lines = lines });
                 ReloadGroups();
-                var msg = $"Đã thêm {r.Created}, bỏ qua {r.Skipped}." + (r.Errors.Count > 0 ? "\n\nLỗi:\n" + string.Join("\n", r.Errors.Take(20)) : "");
-                MessageBox.Show(msg, "Thêm filter", MessageBoxButton.OK, r.Errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
+                var msg = Loc.F("Str.Proxies.AddedSkipped", r.Created, r.Skipped) + (r.Errors.Count > 0 ? Loc.S("Str.Proxies.ErrorsPrefix") + string.Join("\n", r.Errors.Take(20)) : "");
+                MessageBox.Show(msg, Loc.S("Str.Proxies.AddFilterCaption"), MessageBoxButton.OK, r.Errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
             }
             catch (Exception ex) { ShowError(ex); }
         }
@@ -373,6 +377,6 @@ namespace ProxyRouterWpf.ViewModels
         public IReadOnlyList<ProxySourceGroupVM> AllGroups() => _svc.Groups.List();
 
         static void ShowError(Exception ex)
-            => MessageBox.Show(ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            => MessageBox.Show(ex.Message, Loc.S("Str.Common.Error"), MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }

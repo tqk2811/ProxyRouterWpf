@@ -1,5 +1,6 @@
 using ProxyRouterWpf.Enums;
 using ProxyRouterWpf.Helpers;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
 
 namespace ProxyRouterWpf.ViewModels
@@ -31,7 +32,7 @@ namespace ProxyRouterWpf.ViewModels
             }
         }
 
-        public string LockTip => IsRunning ? "Đang chạy — dừng proxy để chỉnh sửa" : string.Empty;
+        public string LockTip => IsRunning ? Loc.S("Str.Proxies.RunningLockTip") : string.Empty;
     }
 
     /// <summary>Display row for a routing group.</summary>
@@ -52,7 +53,7 @@ namespace ProxyRouterWpf.ViewModels
         public string Name => Group.Name;
         public int Priority => Group.Priority;
         public ProxySourceGroupMatchMode MatchMode => Group.MatchMode;
-        public string Summary => $"{SourceCount} proxy · {FilterCount} filter";
+        public string Summary => Loc.F("Str.Proxies.GroupSummary", SourceCount, FilterCount);
     }
 
     /// <summary>Display row for a group filter.</summary>
@@ -66,7 +67,7 @@ namespace ProxyRouterWpf.ViewModels
         }
 
         public Guid Id => Filter.Id;
-        public string TypeText => Filter.FilterType.ToString();
+        public string TypeText => LocalizationManager.EnumText(Filter.FilterType);
         public bool IsNot => Filter.IsNot;
 
         public string Display
@@ -75,7 +76,7 @@ namespace ProxyRouterWpf.ViewModels
             {
                 if (Filter.FilterType == ProxySourceGroupFilterType.TotalBytes && long.TryParse(Filter.Filter, out var bytes))
                 {
-                    var dir = Filter.TrafficDirection?.ToString() ?? "Both";
+                    var dir = LocalizationManager.EnumText(Filter.TrafficDirection ?? ProxyTrafficDirection.Both);
                     return $"{dir} ≥ {BytesFormatter.FormatBytes(bytes)}";
                 }
                 return Filter.Filter;

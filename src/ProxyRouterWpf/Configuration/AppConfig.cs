@@ -21,6 +21,9 @@ namespace ProxyRouterWpf.Configuration
         /// <summary>"System" | "Light" | "Dark".</summary>
         public string Theme { get; set; } = "System";
 
+        /// <summary>"System" | "English" | "Vietnamese".</summary>
+        public string Language { get; set; } = "System";
+
         /// <summary>Max number of tunnel log rows kept in RAM (FIFO, oldest dropped first).</summary>
         public int LogCapacity { get; set; } = 5000;
 

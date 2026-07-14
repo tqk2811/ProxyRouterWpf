@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 
 namespace ProxyRouterWpf.Views.Dialogs
 {
@@ -35,7 +36,7 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             if (string.IsNullOrWhiteSpace(LinesBox.Text))
             {
-                MessageBox.Show("Nhập ít nhất một dòng.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Dialog.BulkSource.LinesRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             FilterType = (ProxySourceGroupFilterType)(TypeBox.SelectedItem ?? ProxySourceGroupFilterType.Wildcard);

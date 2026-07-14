@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
 
 namespace ProxyRouterWpf.Views.Dialogs
@@ -28,7 +29,7 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             bool total = (ProxySourceGroupFilterType?)TypeBox.SelectedItem == ProxySourceGroupFilterType.TotalBytes;
             DirPanel.IsEnabled = total;
-            FilterLabel.Content = total ? "Số bytes ngưỡng (>=)" : "Host pattern";
+            FilterLabel.Content = Loc.S(total ? "Str.Dialog.Filter.BytesLabel" : "Str.Dialog.Filter.HostLabel");
         }
 
         void TypeBox_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => UpdateDirVisibility();
@@ -39,7 +40,7 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             if (string.IsNullOrWhiteSpace(FilterBox.Text))
             {
-                MessageBox.Show("Nhập nội dung filter.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Dialog.Filter.ContentRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             FilterType = (ProxySourceGroupFilterType)(TypeBox.SelectedItem ?? ProxySourceGroupFilterType.Wildcard);

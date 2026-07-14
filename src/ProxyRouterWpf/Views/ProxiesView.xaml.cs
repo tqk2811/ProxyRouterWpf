@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
 using ProxyRouterWpf.ViewModels;
 using ProxyRouterWpf.Views.Dialogs;
@@ -22,7 +23,7 @@ namespace ProxyRouterWpf.Views
         {
             if (Vm.IsRunning)
             {
-                MessageBox.Show("Dừng proxy trước khi chỉnh sửa danh sách proxy nguồn.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(Loc.S("Str.Proxies.StopBeforeEdit"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
                 return true;
             }
             return false;
@@ -142,7 +143,7 @@ namespace ProxyRouterWpf.Views
         // ---------------- Filters ----------------
         void AddFilter_Click(object sender, RoutedEventArgs e)
         {
-            if (Vm.SelectedGroup is not GroupRow g) { MessageBox.Show("Chọn một nhóm trước.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information); return; }
+            if (Vm.SelectedGroup is not GroupRow g) { MessageBox.Show(Loc.S("Str.Proxies.SelectGroupFirst"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information); return; }
             var dlg = new BulkAddFiltersWindow { Owner = Owner };
             if (dlg.ShowDialog() == true)
                 Vm.AddFiltersBulk(g.Id, dlg.FilterType, dlg.TrafficDirection, dlg.IsNot, dlg.Lines);
@@ -181,7 +182,7 @@ namespace ProxyRouterWpf.Views
         void AddGroupSource_Click(object sender, RoutedEventArgs e)
         {
             if (BlockIfRunning()) return;
-            if (Vm.SelectedGroup is not GroupRow g) { MessageBox.Show("Chọn một nhóm trước.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information); return; }
+            if (Vm.SelectedGroup is not GroupRow g) { MessageBox.Show(Loc.S("Str.Proxies.SelectGroupFirst"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information); return; }
             var dlg = new BulkAddSourcesWindow(g.Name) { Owner = Owner };
             if (dlg.ShowDialog() == true)
                 Vm.AddSourcesBulk(g.Id, dlg.ProxyType, dlg.Lines);
@@ -204,6 +205,6 @@ namespace ProxyRouterWpf.Views
         }
 
         static void WarnSelect()
-            => MessageBox.Show("Chọn dòng cần thao tác.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
+            => MessageBox.Show(Loc.S("Str.Proxies.SelectRow"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 }

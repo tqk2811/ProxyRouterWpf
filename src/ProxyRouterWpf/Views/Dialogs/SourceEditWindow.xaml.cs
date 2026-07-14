@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
 
 namespace ProxyRouterWpf.Views.Dialogs
@@ -18,7 +19,7 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             InitializeComponent();
 
-            var choices = new List<GroupChoice> { new() { Label = "(Ungrouped)", Id = null } };
+            var choices = new List<GroupChoice> { new() { Label = Loc.S("Str.Dialog.Source.Ungrouped"), Id = null } };
             foreach (var g in groups)
                 choices.Add(new GroupChoice { Label = g.Name, Id = g.Id });
             GroupBox.ItemsSource = choices;
@@ -40,12 +41,12 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             if (!int.TryParse(PortBox.Text.Trim(), out var port) || port < 1 || port > 65535)
             {
-                MessageBox.Show("Port không hợp lệ (1..65535).", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Dialog.Source.PortInvalid"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             if (string.IsNullOrWhiteSpace(AddressBox.Text))
             {
-                MessageBox.Show("Nhập address.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Dialog.Source.AddressRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             GroupId = (GroupBox.SelectedItem as GroupChoice)?.Id;

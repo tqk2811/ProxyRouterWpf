@@ -20,13 +20,13 @@
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" Style="{StaticResource Card}">
                 <StackPanel>
-                    <TextBlock Text="Download" Style="{StaticResource Subtle}"/>
+                    <TextBlock Text="{DynamicResource Str.Bandwidth.Download}" Style="{StaticResource Subtle}"/>
                     <TextBlock Text="{Binding DownloadText}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Success}"/>
                 </StackPanel>
             </Border>
             <Border Grid.Column="2" Style="{StaticResource Card}">
                 <StackPanel>
-                    <TextBlock Text="Upload" Style="{StaticResource Subtle}"/>
+                    <TextBlock Text="{DynamicResource Str.Bandwidth.Upload}" Style="{StaticResource Subtle}"/>
                     <TextBlock Text="{Binding UploadText}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Info}"/>
                 </StackPanel>
             </Border>

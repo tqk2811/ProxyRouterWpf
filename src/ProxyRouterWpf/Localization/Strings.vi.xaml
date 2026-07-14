@@ -1,0 +1,208 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="Str._Marker">vi</sys:String>
+
+    <!-- ===== Common ===== -->
+    <sys:String x:Key="Str.Common.Save">Lưu</sys:String>
+    <sys:String x:Key="Str.Common.Cancel">Huỷ</sys:String>
+    <sys:String x:Key="Str.Common.Add">Thêm</sys:String>
+    <sys:String x:Key="Str.Common.Edit">Sửa</sys:String>
+    <sys:String x:Key="Str.Common.Delete">Xoá</sys:String>
+    <sys:String x:Key="Str.Common.Assign">Gán</sys:String>
+    <sys:String x:Key="Str.Common.Copy">Copy</sys:String>
+    <sys:String x:Key="Str.Common.Confirm">Xác nhận</sys:String>
+    <sys:String x:Key="Str.Common.Error">Lỗi</sys:String>
+
+    <!-- ===== Tabs ===== -->
+    <sys:String x:Key="Str.Tab.Proxies">Proxies</sys:String>
+    <sys:String x:Key="Str.Tab.Logs">Logs</sys:String>
+    <sys:String x:Key="Str.Tab.Bandwidth">Băng thông</sys:String>
+    <sys:String x:Key="Str.Tab.Settings">Cài đặt</sys:String>
+
+    <!-- ===== Theme toggle tooltip ===== -->
+    <sys:String x:Key="Str.Theme.System">Giao diện: Hệ thống (bấm để đổi)</sys:String>
+    <sys:String x:Key="Str.Theme.Light">Giao diện: Sáng (bấm để đổi)</sys:String>
+    <sys:String x:Key="Str.Theme.Dark">Giao diện: Tối (bấm để đổi)</sys:String>
+
+    <!-- ===== Settings ===== -->
+    <sys:String x:Key="Str.Settings.Title">Cài đặt</sys:String>
+    <sys:String x:Key="Str.Settings.Theme">Giao diện (theme)</sys:String>
+    <sys:String x:Key="Str.Settings.Language">Ngôn ngữ</sys:String>
+    <sys:String x:Key="Str.Settings.LogCapacity">Số log tunnel giữ trong RAM (FIFO)</sys:String>
+    <sys:String x:Key="Str.Settings.LogCapacityHint">Khi vượt quá, log cũ nhất bị loại bỏ trước (100..200000).</sys:String>
+    <sys:String x:Key="Str.Settings.NoteTitle">Ghi chú</sys:String>
+    <sys:String x:Key="Str.Settings.NoteBody">• Cấu hình proxy lưu tại proxyrouter.config.json cạnh file .exe.&#10;• Log tunnel chỉ ở RAM, không lưu ra đĩa.&#10;• Proxy KHÔNG tự chạy khi mở app — bấm Bật Proxy ở tab Proxies.</sys:String>
+    <sys:String x:Key="Str.Settings.Saved">Đã lưu cài đặt.</sys:String>
+
+    <!-- ===== Proxies tab ===== -->
+    <sys:String x:Key="Str.Proxies.ServerTitle">Máy chủ Proxy</sys:String>
+    <sys:String x:Key="Str.Proxies.StartPort">Start Port</sys:String>
+    <sys:String x:Key="Str.Proxies.ListenAddress">Địa chỉ lắng nghe</sys:String>
+    <sys:String x:Key="Str.Proxies.ListenAddressTip">IP mà listener bind vào (0.0.0.0 = mọi interface)</sys:String>
+    <sys:String x:Key="Str.Proxies.ProxyUsername">Proxy Username</sys:String>
+    <sys:String x:Key="Str.Proxies.ProxyPassword">Proxy Password</sys:String>
+    <sys:String x:Key="Str.Proxies.Socks4UserId">SOCKS4 UserId</sys:String>
+    <sys:String x:Key="Str.Proxies.Start">Bật Proxy</sys:String>
+    <sys:String x:Key="Str.Proxies.Stop">Dừng Proxy</sys:String>
+    <sys:String x:Key="Str.Proxies.SaveConfig">Lưu cấu hình</sys:String>
+    <sys:String x:Key="Str.Proxies.Output">Proxy Output</sys:String>
+    <sys:String x:Key="Str.Proxies.OutputIpTip">IP dùng để dựng danh sách proxy output</sys:String>
+    <sys:String x:Key="Str.Proxies.UngroupedTitle">Proxy nguồn (Ungrouped) — chuột phải để thao tác</sys:String>
+    <sys:String x:Key="Str.Proxies.ColProxy">Proxy</sys:String>
+    <sys:String x:Key="Str.Proxies.ColType">Loại</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuAddProxy">Thêm proxy…</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuAssignGroup">Gán nhóm…</sys:String>
+    <sys:String x:Key="Str.Proxies.GroupsTitle">Nhóm định tuyến — chuột phải để thao tác</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuAddGroup">Thêm nhóm…</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuGroupUp">Lên (ưu tiên hơn)</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuGroupDown">Xuống</sys:String>
+    <sys:String x:Key="Str.Proxies.ColName">Tên</sys:String>
+    <sys:String x:Key="Str.Proxies.ColPriority">Ưu tiên</sys:String>
+    <sys:String x:Key="Str.Proxies.ColMatch">Match</sys:String>
+    <sys:String x:Key="Str.Proxies.ColContent">Nội dung</sys:String>
+    <sys:String x:Key="Str.Proxies.SelectGroup">Chọn một nhóm</sys:String>
+    <sys:String x:Key="Str.Proxies.TabFilters">Filters</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuAddFilter">Thêm filter…</sys:String>
+    <sys:String x:Key="Str.Proxies.ColFilter">Filter</sys:String>
+    <sys:String x:Key="Str.Proxies.TabGroupProxies">Proxy trong nhóm</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuRemoveFromGroup">Bỏ khỏi nhóm</sys:String>
+
+    <!-- Proxies tab — ViewModel / code-behind messages -->
+    <sys:String x:Key="Str.Proxies.Stopped">Đã dừng</sys:String>
+    <sys:String x:Key="Str.Proxies.Running">Đang chạy · {0} listener</sys:String>
+    <sys:String x:Key="Str.Proxies.ConfigSaved">Đã lưu cấu hình</sys:String>
+    <sys:String x:Key="Str.Proxies.Copied">Đã copy {0} dòng</sys:String>
+    <sys:String x:Key="Str.Proxies.NoProxyOutput">(chưa có proxy)</sys:String>
+    <sys:String x:Key="Str.Proxies.StartPortRange">Start Port phải trong khoảng 10000..65535.</sys:String>
+    <sys:String x:Key="Str.Proxies.EnableProtocol">Bật ít nhất một giao thức (HTTP/SOCKS4/SOCKS5) trước khi khởi động.</sys:String>
+    <sys:String x:Key="Str.Proxies.NoUngrouped">Chưa có proxy nguồn nào (Ungrouped). Thêm proxy trước khi khởi động.</sys:String>
+    <sys:String x:Key="Str.Proxies.NoListenerStarted">Không khởi động được listener nào (cổng có thể đang bị chiếm).</sys:String>
+    <sys:String x:Key="Str.Proxies.NoProxyToCopy">Chưa có proxy để copy.</sys:String>
+    <sys:String x:Key="Str.Proxies.AddedSkipped">Đã thêm {0}, bỏ qua {1}.</sys:String>
+    <sys:String x:Key="Str.Proxies.ErrorsPrefix">&#10;&#10;Lỗi:&#10;</sys:String>
+    <sys:String x:Key="Str.Proxies.AddProxyCaption">Thêm proxy</sys:String>
+    <sys:String x:Key="Str.Proxies.AddFilterCaption">Thêm filter</sys:String>
+    <sys:String x:Key="Str.Proxies.DeleteProxiesConfirm">Xoá {0} proxy?</sys:String>
+    <sys:String x:Key="Str.Proxies.DeleteGroupConfirm">Xoá group này? (Proxy và filter thuộc group cũng bị xoá)</sys:String>
+    <sys:String x:Key="Str.Proxies.StopBeforeEdit">Dừng proxy trước khi chỉnh sửa danh sách proxy nguồn.</sys:String>
+    <sys:String x:Key="Str.Proxies.SelectGroupFirst">Chọn một nhóm trước.</sys:String>
+    <sys:String x:Key="Str.Proxies.SelectRow">Chọn dòng cần thao tác.</sys:String>
+    <sys:String x:Key="Str.Proxies.RunningLockTip">Đang chạy — dừng proxy để chỉnh sửa</sys:String>
+    <sys:String x:Key="Str.Proxies.GroupSummary">{0} proxy · {1} filter</sys:String>
+
+    <!-- ===== Logs tab ===== -->
+    <sys:String x:Key="Str.Logs.AllOutcome">Tất cả outcome</sys:String>
+    <sys:String x:Key="Str.Logs.AllType">Tất cả loại</sys:String>
+    <sys:String x:Key="Str.Logs.TagClientServer">Client/Server</sys:String>
+    <sys:String x:Key="Str.Logs.TagTargetHost">Target host</sys:String>
+    <sys:String x:Key="Str.Logs.TagPickedSource">Picked source</sys:String>
+    <sys:String x:Key="Str.Logs.Filter">Lọc</sys:String>
+    <sys:String x:Key="Str.Logs.ClearFilter">Xoá lọc</sys:String>
+    <sys:String x:Key="Str.Logs.AutoRefresh">Tự làm mới</sys:String>
+    <sys:String x:Key="Str.Logs.Refresh">Làm mới</sys:String>
+    <sys:String x:Key="Str.Logs.PageSize">Kích thước trang:</sys:String>
+    <sys:String x:Key="Str.Logs.ClearAll">Xoá toàn bộ log</sys:String>
+    <sys:String x:Key="Str.Logs.Empty">Chưa có log tunnel. Bật Proxy ở tab Proxies và tạo lưu lượng qua proxy để xem log ở đây.</sys:String>
+    <sys:String x:Key="Str.Logs.ColOutcome">Outcome</sys:String>
+    <sys:String x:Key="Str.Logs.ColClientServer">Client → Server</sys:String>
+    <sys:String x:Key="Str.Logs.ColUpload">Upload</sys:String>
+    <sys:String x:Key="Str.Logs.ColDownload">Download</sys:String>
+    <sys:String x:Key="Str.Logs.ColTarget">Target</sys:String>
+    <sys:String x:Key="Str.Logs.ColReject">Reject</sys:String>
+    <sys:String x:Key="Str.Logs.ColGroup">Group</sys:String>
+    <sys:String x:Key="Str.Logs.ColPickedSource">Picked source</sys:String>
+    <sys:String x:Key="Str.Logs.View">Xem</sys:String>
+    <sys:String x:Key="Str.Logs.Prev">◀ Trước</sys:String>
+    <sys:String x:Key="Str.Logs.Next">Sau ▶</sys:String>
+    <sys:String x:Key="Str.Logs.PageInfo">Trang {0}/{1} · {2} log · giữ tối đa {3}</sys:String>
+    <sys:String x:Key="Str.Logs.ClearAllConfirm">Xoá toàn bộ log trong RAM?</sys:String>
+
+    <!-- ===== Bandwidth tab ===== -->
+    <sys:String x:Key="Str.Bandwidth.Download">Download</sys:String>
+    <sys:String x:Key="Str.Bandwidth.Upload">Upload</sys:String>
+    <sys:String x:Key="Str.Bandwidth.Waiting">Đang chờ dữ liệu...</sys:String>
+    <sys:String x:Key="Str.Bandwidth.Updated">Cập nhật: {0}</sys:String>
+
+    <!-- ===== Dialogs ===== -->
+    <sys:String x:Key="Str.Dialog.Group.AddTitle">Thêm nhóm</sys:String>
+    <sys:String x:Key="Str.Dialog.Group.EditTitle">Sửa nhóm</sys:String>
+    <sys:String x:Key="Str.Dialog.Group.Name">Tên nhóm</sys:String>
+    <sys:String x:Key="Str.Dialog.Group.MatchMode">Match mode</sys:String>
+    <sys:String x:Key="Str.Dialog.Group.NameRequired">Nhập tên nhóm.</sys:String>
+
+    <sys:String x:Key="Str.Dialog.Source.EditTitle">Sửa proxy</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Group">Nhóm</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Type">Loại</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Port">Port</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Address">Address</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Username">Username</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Password">Password</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Ungrouped">(Ungrouped)</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.PortInvalid">Port không hợp lệ (1..65535).</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.AddressRequired">Nhập address.</sys:String>
+
+    <sys:String x:Key="Str.Dialog.BulkSource.Title">Thêm proxy hàng loạt</sys:String>
+    <sys:String x:Key="Str.Dialog.BulkSource.TitleToGroup">Thêm proxy vào nhóm: {0}</sys:String>
+    <sys:String x:Key="Str.Dialog.BulkSource.DefaultType">Loại proxy mặc định (dòng có scheme:// sẽ tự nhận loại)</sys:String>
+    <sys:String x:Key="Str.Dialog.BulkSource.LinesHint">Mỗi dòng 1 proxy — host:port[:user:pass] hoặc scheme://user:pass@host:port</sys:String>
+    <sys:String x:Key="Str.Dialog.BulkSource.LinesRequired">Nhập ít nhất một dòng.</sys:String>
+
+    <sys:String x:Key="Str.Dialog.Filter.EditTitle">Sửa filter</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.Type">Loại filter</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.Direction">Traffic direction (chỉ dùng cho TotalBytes)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.ContentLabel">Filter (host pattern / hoặc số bytes cho TotalBytes)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.BytesLabel">Số bytes ngưỡng (&gt;=)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.HostLabel">Host pattern</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.Not">Đảo kết quả (NOT)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.ContentRequired">Nhập nội dung filter.</sys:String>
+
+    <sys:String x:Key="Str.Dialog.BulkFilter.Title">Thêm filter hàng loạt</sys:String>
+    <sys:String x:Key="Str.Dialog.BulkFilter.Direction">Direction</sys:String>
+    <sys:String x:Key="Str.Dialog.BulkFilter.LinesHint">Mỗi dòng 1 filter</sys:String>
+
+    <sys:String x:Key="Str.Dialog.Assign.Title">Gán proxy vào nhóm</sys:String>
+    <sys:String x:Key="Str.Dialog.Assign.Choose">Chọn nhóm đích</sys:String>
+    <sys:String x:Key="Str.Dialog.Assign.Count">Gán {0} proxy vào nhóm:</sys:String>
+
+    <!-- ===== Log detail window ===== -->
+    <sys:String x:Key="Str.LogDetail.Title">Chi tiết tunnel</sys:String>
+    <sys:String x:Key="Str.LogDetail.Tunnel">Tunnel</sys:String>
+    <sys:String x:Key="Str.LogDetail.Auth">Xác thực</sys:String>
+    <sys:String x:Key="Str.LogDetail.Routing">Định tuyến</sys:String>
+    <sys:String x:Key="Str.LogDetail.Error">Lỗi</sys:String>
+    <sys:String x:Key="Str.LogDetail.Direct">Direct (không upstream)</sys:String>
+
+    <!-- ===== Enum display text ===== -->
+    <sys:String x:Key="Enum.ProxyTunnelOutcome.ClientRejected">Từ chối client</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelOutcome.RequestFailed">Request lỗi</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelOutcome.AuthRejected">Từ chối xác thực</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelOutcome.RouteFailed">Định tuyến lỗi</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelOutcome.Resolved">Thành công</sys:String>
+
+    <sys:String x:Key="Enum.ProxyTunnelRoutingDecision.Default">Mặc định</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRoutingDecision.GroupMatched">Khớp nhóm</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRoutingDecision.GroupEmptyFallback">Nhóm rỗng (dự phòng)</sys:String>
+
+    <sys:String x:Key="Enum.ProxyTrafficDirection.Both">Cả hai</sys:String>
+    <sys:String x:Key="Enum.ProxyTrafficDirection.Upload">Upload</sys:String>
+    <sys:String x:Key="Enum.ProxyTrafficDirection.Download">Download</sys:String>
+
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.IpNotInWhitelist">IP không nằm trong whitelist</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.EmptyRequest">Request rỗng</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.Socks4Disabled">SOCKS4 bị tắt</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.Socks5Disabled">SOCKS5 bị tắt</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.HttpDisabled">HTTP bị tắt</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.UnknownProtocol">Giao thức không xác định</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.PreReadFailed">Pre-read thất bại</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.Socks4UserIdMismatch">SOCKS4 UserId không khớp</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.Socks5GreetingMissingUsernamePassword">SOCKS5 greeting thiếu username/password</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.Socks5GreetingNoAcceptableMethod">SOCKS5 greeting: không có method phù hợp</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.CredentialMismatch">Sai thông tin đăng nhập</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.MissingCredential">Thiếu thông tin đăng nhập</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.ProxyTypeUnsupported">Loại proxy không hỗ trợ</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.UpstreamConnectFailed">Kết nối upstream thất bại</sys:String>
+    <sys:String x:Key="Enum.ProxyTunnelRejectReason.TunnelAborted">Tunnel bị huỷ</sys:String>
+
+</ResourceDictionary>

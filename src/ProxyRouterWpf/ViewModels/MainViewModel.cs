@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ProxyRouterWpf.Configuration;
+using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Themes;
 
 namespace ProxyRouterWpf.ViewModels
@@ -24,8 +25,18 @@ namespace ProxyRouterWpf.ViewModels
             };
             Settings.ThemeChanged = UpdateThemeGlyph;
 
+            LocalizationManager.LanguageChanged += OnLanguageChanged;
+
             UpdateThemeGlyph();
             Bandwidth.Start();
+        }
+
+        void OnLanguageChanged()
+        {
+            UpdateThemeGlyph();
+            Proxies.OnLanguageChanged();
+            Logs.OnLanguageChanged();
+            Bandwidth.OnLanguageChanged();
         }
 
         public ProxiesViewModel Proxies { get; }
@@ -35,7 +46,7 @@ namespace ProxyRouterWpf.ViewModels
 
         [ObservableProperty] int selectedTabIndex;
         [ObservableProperty] string themeGlyph = char.ConvertFromUtf32(0xE713);
-        [ObservableProperty] string themeTooltip = "Theme: System";
+        [ObservableProperty] string themeTooltip = Loc.S("Str.Theme.System");
 
         [RelayCommand]
         void ToggleTheme()
@@ -52,9 +63,9 @@ namespace ProxyRouterWpf.ViewModels
             // Segoe MDL2 Assets: E713 = Settings (System), E706 = Brightness (Light), E708 = QuietHours (Dark).
             (int code, string tip) = ThemeManager.CurrentMode switch
             {
-                ThemeMode.Light => (0xE706, "Theme: Light (bấm để đổi)"),
-                ThemeMode.Dark => (0xE708, "Theme: Dark (bấm để đổi)"),
-                _ => (0xE713, "Theme: System (bấm để đổi)"),
+                ThemeMode.Light => (0xE706, Loc.S("Str.Theme.Light")),
+                ThemeMode.Dark => (0xE708, Loc.S("Str.Theme.Dark")),
+                _ => (0xE713, Loc.S("Str.Theme.System")),
             };
             ThemeGlyph = char.ConvertFromUtf32(code);
             ThemeTooltip = tip;

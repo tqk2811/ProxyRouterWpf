@@ -10,11 +10,11 @@
     <Border BorderBrush="{DynamicResource Brush.Surface.BorderBrush}" BorderThickness="1">
         <DockPanel>
             <Border DockPanel.Dock="Top" Background="{DynamicResource Brush.TitleBar.Background}" Padding="16,12" MouseLeftButtonDown="Header_Drag">
-                <TextBlock Text="Thêm filter hàng loạt" FontWeight="SemiBold" FontSize="14"/>
+                <TextBlock Text="{DynamicResource Str.Dialog.BulkFilter.Title}" FontWeight="SemiBold" FontSize="14"/>
             </Border>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="16">
-                <Button Content="Huỷ" Click="Cancel_Click" MinWidth="84"/>
-                <Button Content="Thêm" Style="{StaticResource AccentButton}" Click="Ok_Click" MinWidth="84" Margin="8,0,0,0"/>
+                <Button Content="{DynamicResource Str.Common.Cancel}" Click="Cancel_Click" MinWidth="84"/>
+                <Button Content="{DynamicResource Str.Common.Add}" Style="{StaticResource AccentButton}" Click="Ok_Click" MinWidth="84" Margin="8,0,0,0"/>
             </StackPanel>
             <DockPanel Margin="16,14">
                 <Grid DockPanel.Dock="Top">
@@ -26,18 +26,24 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <Label Content="Loại filter"/>
+                        <Label Content="{DynamicResource Str.Dialog.Filter.Type}"/>
                         <ComboBox x:Name="TypeBox" SelectionChanged="TypeBox_Changed"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" x:Name="DirPanel">
-                        <Label Content="Direction"/>
-                        <ComboBox x:Name="DirBox"/>
+                        <Label Content="{DynamicResource Str.Dialog.BulkFilter.Direction}"/>
+                        <ComboBox x:Name="DirBox">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource EnumLoc}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Column="4" VerticalAlignment="Bottom">
                         <CheckBox x:Name="IsNotBox" Content="NOT" Margin="0,0,0,6"/>
                     </StackPanel>
                 </Grid>
-                <Label DockPanel.Dock="Top" Content="Mỗi dòng 1 filter" Margin="0,10,0,4"/>
+                <Label DockPanel.Dock="Top" Content="{DynamicResource Str.Dialog.BulkFilter.LinesHint}" Margin="0,10,0,4"/>
                 <TextBox x:Name="LinesBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
                          FontFamily="Consolas" TextWrapping="NoWrap" VerticalContentAlignment="Top"/>
             </DockPanel>

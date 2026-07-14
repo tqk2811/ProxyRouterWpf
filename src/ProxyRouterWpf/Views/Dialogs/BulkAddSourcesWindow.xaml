@@ -10,17 +10,17 @@
     <Border BorderBrush="{DynamicResource Brush.Surface.BorderBrush}" BorderThickness="1">
         <DockPanel>
             <Border DockPanel.Dock="Top" Background="{DynamicResource Brush.TitleBar.Background}" Padding="16,12" MouseLeftButtonDown="Header_Drag">
-                <TextBlock x:Name="TitleText" Text="Thêm proxy hàng loạt" FontWeight="SemiBold" FontSize="14"/>
+                <TextBlock x:Name="TitleText" Text="{DynamicResource Str.Dialog.BulkSource.Title}" FontWeight="SemiBold" FontSize="14"/>
             </Border>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="16">
-                <Button Content="Huỷ" Click="Cancel_Click" MinWidth="84"/>
-                <Button Content="Thêm" Style="{StaticResource AccentButton}" Click="Ok_Click" MinWidth="84" Margin="8,0,0,0"/>
+                <Button Content="{DynamicResource Str.Common.Cancel}" Click="Cancel_Click" MinWidth="84"/>
+                <Button Content="{DynamicResource Str.Common.Add}" Style="{StaticResource AccentButton}" Click="Ok_Click" MinWidth="84" Margin="8,0,0,0"/>
             </StackPanel>
             <DockPanel Margin="16,14">
                 <StackPanel DockPanel.Dock="Top">
-                    <Label Content="Loại proxy mặc định (dòng có scheme:// sẽ tự nhận loại)"/>
+                    <Label Content="{DynamicResource Str.Dialog.BulkSource.DefaultType}"/>
                     <ComboBox x:Name="TypeBox" Width="180" HorizontalAlignment="Left"/>
-                    <Label Content="Mỗi dòng 1 proxy — host:port[:user:pass] hoặc scheme://user:pass@host:port" Margin="0,10,0,4"/>
+                    <Label Content="{DynamicResource Str.Dialog.BulkSource.LinesHint}" Margin="0,10,0,4"/>
                 </StackPanel>
                 <TextBox x:Name="LinesBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
                          FontFamily="Consolas" TextWrapping="NoWrap" VerticalContentAlignment="Top"/>

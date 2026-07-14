@@ -19,20 +19,20 @@
                 <WrapPanel>
                     <ComboBox Width="150" Margin="0,0,8,8" ItemsSource="{Binding OutcomeOptions}" SelectedItem="{Binding SelectedOutcome}"/>
                     <ComboBox Width="120" Margin="0,0,8,8" ItemsSource="{Binding ProxyTypeOptions}" SelectedItem="{Binding SelectedProxyType}"/>
-                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding ClientServer, UpdateSourceTrigger=PropertyChanged}" Tag="Client/Server"/>
-                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding TargetHost, UpdateSourceTrigger=PropertyChanged}" Tag="Target host"/>
-                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding PickedSource, UpdateSourceTrigger=PropertyChanged}" Tag="Picked source"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding ClientServer, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Str.Logs.TagClientServer}"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding TargetHost, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Str.Logs.TagTargetHost}"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding PickedSource, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Str.Logs.TagPickedSource}"/>
                     <DatePicker Width="130" Margin="0,0,8,8" SelectedDate="{Binding FromDate}"/>
                     <DatePicker Width="130" Margin="0,0,8,8" SelectedDate="{Binding ToDate}"/>
-                    <Button Content="Lọc" Style="{StaticResource AccentButton}" Command="{Binding ApplyCommand}" Margin="0,0,8,8"/>
-                    <Button Content="Xoá lọc" Command="{Binding ClearFiltersCommand}" Margin="0,0,8,8"/>
+                    <Button Content="{DynamicResource Str.Logs.Filter}" Style="{StaticResource AccentButton}" Command="{Binding ApplyCommand}" Margin="0,0,8,8"/>
+                    <Button Content="{DynamicResource Str.Logs.ClearFilter}" Command="{Binding ClearFiltersCommand}" Margin="0,0,8,8"/>
                 </WrapPanel>
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox Content="Tự làm mới" IsChecked="{Binding AutoRefresh}" VerticalAlignment="Center" Margin="0,0,16,0"/>
-                    <Button Content="Làm mới" Command="{Binding RefreshCommand}" Margin="0,0,8,0"/>
-                    <TextBlock Text="Kích thước trang:" VerticalAlignment="Center" Margin="8,0,6,0" Style="{StaticResource Subtle}"/>
+                    <CheckBox Content="{DynamicResource Str.Logs.AutoRefresh}" IsChecked="{Binding AutoRefresh}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <Button Content="{DynamicResource Str.Logs.Refresh}" Command="{Binding RefreshCommand}" Margin="0,0,8,0"/>
+                    <TextBlock Text="{DynamicResource Str.Logs.PageSize}" VerticalAlignment="Center" Margin="8,0,6,0" Style="{StaticResource Subtle}"/>
                     <ComboBox Width="80" ItemsSource="{Binding PageSizeOptions}" SelectedItem="{Binding PageSize}"/>
-                    <Button Content="Xoá toàn bộ log" Style="{StaticResource DangerButton}" Command="{Binding ClearAllCommand}" HorizontalAlignment="Right" Margin="16,0,0,0"/>
+                    <Button Content="{DynamicResource Str.Logs.ClearAll}" Style="{StaticResource DangerButton}" Command="{Binding ClearAllCommand}" HorizontalAlignment="Right" Margin="16,0,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -40,7 +40,7 @@
         <!-- Grid -->
         <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0">
           <Grid>
-            <TextBlock Text="Chưa có log tunnel. Bật Proxy ở tab Proxies và tạo lưu lượng qua proxy để xem log ở đây."
+            <TextBlock Text="{DynamicResource Str.Logs.Empty}"
                        HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="420"
                        TextAlignment="Center" Style="{StaticResource Subtle}"
                        Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}"/>
@@ -49,17 +49,19 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="EndAt" SortMemberPath="EndAt" Width="150"
                                         Binding="{Binding EndAt, Converter={StaticResource LocalTime}}"/>
-                    <DataGridTemplateColumn Header="Outcome" SortMemberPath="Outcome" Width="110">
+                    <DataGridTemplateColumn SortMemberPath="Outcome" Width="110">
+                        <DataGridTemplateColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColOutcome}"/></DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Border CornerRadius="5" Padding="7,2" HorizontalAlignment="Left" VerticalAlignment="Center"
                                         Background="{Binding Outcome, Converter={StaticResource OutcomeBrush}}">
-                                    <TextBlock Text="{Binding Outcome}" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Outcome, Converter={StaticResource EnumLoc}}" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
                                 </Border>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Client → Server" SortMemberPath="ClientAddress" Width="220">
+                    <DataGridTemplateColumn SortMemberPath="ClientAddress" Width="220">
+                        <DataGridTemplateColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColClientServer}"/></DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -72,11 +74,16 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Upload" SortMemberPath="TotalBytesUpload" Width="90"
-                                        Binding="{Binding TotalBytesUpload, Converter={StaticResource Bytes}}"/>
-                    <DataGridTextColumn Header="Download" SortMemberPath="TotalBytesDownload" Width="90"
-                                        Binding="{Binding TotalBytesDownload, Converter={StaticResource Bytes}}"/>
-                    <DataGridTemplateColumn Header="Target" SortMemberPath="TargetHost" Width="180">
+                    <DataGridTextColumn SortMemberPath="TotalBytesUpload" Width="90"
+                                        Binding="{Binding TotalBytesUpload, Converter={StaticResource Bytes}}">
+                        <DataGridTextColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColUpload}"/></DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn SortMemberPath="TotalBytesDownload" Width="90"
+                                        Binding="{Binding TotalBytesDownload, Converter={StaticResource Bytes}}">
+                        <DataGridTextColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColDownload}"/></DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn SortMemberPath="TargetHost" Width="180">
+                        <DataGridTemplateColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColTarget}"/></DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -86,11 +93,16 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Reject" SortMemberPath="RejectReason" Width="150"
-                                        Binding="{Binding RejectReason, Converter={StaticResource Dash}}"/>
-                    <DataGridTextColumn Header="Group" SortMemberPath="MatchedGroupName" Width="110"
-                                        Binding="{Binding MatchedGroupName, Converter={StaticResource Dash}}"/>
-                    <DataGridTemplateColumn Header="Picked source" SortMemberPath="PickedSourceAddress" Width="180">
+                    <DataGridTextColumn SortMemberPath="RejectReason" Width="150"
+                                        Binding="{Binding RejectReason, Converter={StaticResource EnumLoc}}">
+                        <DataGridTextColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColReject}"/></DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn SortMemberPath="MatchedGroupName" Width="110"
+                                        Binding="{Binding MatchedGroupName, Converter={StaticResource Dash}}">
+                        <DataGridTextColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColGroup}"/></DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn SortMemberPath="PickedSourceAddress" Width="180">
+                        <DataGridTemplateColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColPickedSource}"/></DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -103,7 +115,7 @@
                     <DataGridTemplateColumn Header="" Width="70">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Xem" Height="24" Padding="10,0" Click="ViewDetail_Click"/>
+                                <Button Content="{DynamicResource Str.Logs.View}" Height="24" Padding="10,0" Click="ViewDetail_Click"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -116,8 +128,8 @@
         <DockPanel Grid.Row="2" Margin="0,10,0,0">
             <TextBlock Text="{Binding PageInfo}" Style="{StaticResource Subtle}" VerticalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="◀ Trước" Command="{Binding PrevCommand}"/>
-                <Button Content="Sau ▶" Command="{Binding NextCommand}" Margin="8,0,0,0"/>
+                <Button Content="{DynamicResource Str.Logs.Prev}" Command="{Binding PrevCommand}"/>
+                <Button Content="{DynamicResource Str.Logs.Next}" Command="{Binding NextCommand}" Margin="8,0,0,0"/>
             </StackPanel>
         </DockPanel>
     </Grid>

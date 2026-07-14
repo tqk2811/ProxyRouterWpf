@@ -8,24 +8,24 @@
              mc:Ignorable="d">
     <Border Style="{StaticResource Card}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="460">
         <StackPanel>
-            <TextBlock Style="{StaticResource Heading}" Text="Cài đặt"/>
+            <TextBlock Style="{StaticResource Heading}" Text="{DynamicResource Str.Settings.Title}"/>
 
-            <Label Content="Giao diện (theme)" Margin="0,14,0,0"/>
+            <Label Content="{DynamicResource Str.Settings.Theme}" Margin="0,14,0,0"/>
             <ComboBox Width="220" HorizontalAlignment="Left" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding SelectedTheme}"/>
 
-            <Label Content="Số log tunnel giữ trong RAM (FIFO)" Margin="0,14,0,0"/>
+            <Label Content="{DynamicResource Str.Settings.LogCapacity}" Margin="0,14,0,0"/>
             <TextBox Width="220" HorizontalAlignment="Left" Text="{Binding LogCapacity, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock Style="{StaticResource Subtle}" Margin="0,4,0,0"
-                       Text="Khi vượt quá, log cũ nhất bị loại bỏ trước (100..200000)."/>
+                       Text="{DynamicResource Str.Settings.LogCapacityHint}"/>
 
-            <Button Content="Lưu" Style="{StaticResource AccentButton}" Command="{Binding SaveCommand}"
+            <Button Content="{DynamicResource Str.Common.Save}" Style="{StaticResource AccentButton}" Command="{Binding SaveCommand}"
                     HorizontalAlignment="Left" MinWidth="100" Margin="0,20,0,0"/>
 
             <Border Style="{StaticResource Card}" Background="{DynamicResource Brush.Surface.Alt}" Margin="0,20,0,0">
                 <StackPanel>
-                    <TextBlock Text="Ghi chú" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                    <TextBlock Text="{DynamicResource Str.Settings.NoteTitle}" FontWeight="SemiBold" Margin="0,0,0,6"/>
                     <TextBlock Style="{StaticResource Subtle}" TextWrapping="Wrap"
-                               Text="• Cấu hình proxy lưu tại proxyrouter.config.json cạnh file .exe.&#10;• Log tunnel chỉ ở RAM, không lưu ra đĩa.&#10;• Proxy KHÔNG tự chạy khi mở app — bấm Bật Proxy ở tab Proxies."/>
+                               Text="{DynamicResource Str.Settings.NoteBody}"/>
                 </StackPanel>
             </Border>
         </StackPanel>

@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Localization;
 
 namespace ProxyRouterWpf.Views.Dialogs
 {
@@ -15,7 +16,7 @@ namespace ProxyRouterWpf.Views.Dialogs
             TypeBox.ItemsSource = Enum.GetValues<ProxyType>();
             TypeBox.SelectedItem = ProxyType.Http;
             if (targetGroupName != null)
-                TitleText.Text = $"Thêm proxy vào nhóm: {targetGroupName}";
+                TitleText.Text = Loc.F("Str.Dialog.BulkSource.TitleToGroup", targetGroupName);
         }
 
         void Header_Drag(object sender, MouseButtonEventArgs e) { if (e.ButtonState == MouseButtonState.Pressed) DragMove(); }
@@ -25,7 +26,7 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             if (string.IsNullOrWhiteSpace(LinesBox.Text))
             {
-                MessageBox.Show("Nhập ít nhất một dòng.", "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Dialog.BulkSource.LinesRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             ProxyType = (ProxyType)(TypeBox.SelectedItem ?? ProxyType.Http);
