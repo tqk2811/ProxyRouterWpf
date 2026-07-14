@@ -19,21 +19,14 @@
     <sys:String x:Key="Str.Tab.Proxies">Proxies</sys:String>
     <sys:String x:Key="Str.Tab.Logs">Logs</sys:String>
     <sys:String x:Key="Str.Tab.Bandwidth">Băng thông</sys:String>
-    <sys:String x:Key="Str.Tab.Settings">Cài đặt</sys:String>
 
     <!-- ===== Theme toggle tooltip ===== -->
     <sys:String x:Key="Str.Theme.System">Giao diện: Hệ thống (bấm để đổi)</sys:String>
     <sys:String x:Key="Str.Theme.Light">Giao diện: Sáng (bấm để đổi)</sys:String>
     <sys:String x:Key="Str.Theme.Dark">Giao diện: Tối (bấm để đổi)</sys:String>
 
-    <!-- ===== Settings ===== -->
-    <sys:String x:Key="Str.Settings.Title">Cài đặt</sys:String>
-    <sys:String x:Key="Str.Settings.Theme">Giao diện (theme)</sys:String>
+    <!-- ===== Settings (theme/ngôn ngữ nằm trên title bar) ===== -->
     <sys:String x:Key="Str.Settings.Language">Ngôn ngữ</sys:String>
-    <sys:String x:Key="Str.Settings.LogCapacity">Số log tunnel giữ trong RAM (FIFO)</sys:String>
-    <sys:String x:Key="Str.Settings.LogCapacityHint">Khi vượt quá, log cũ nhất bị loại bỏ trước (100..200000).</sys:String>
-    <sys:String x:Key="Str.Settings.NoteTitle">Ghi chú</sys:String>
-    <sys:String x:Key="Str.Settings.NoteBody">• Cấu hình proxy lưu tại proxyrouter.config.json cạnh file .exe.&#10;• Log tunnel chỉ ở RAM, không lưu ra đĩa.&#10;• Proxy KHÔNG tự chạy khi mở app — bấm Bật Proxy ở tab Proxies.</sys:String>
     <sys:String x:Key="Str.Settings.Saved">Đã lưu cài đặt.</sys:String>
 
     <!-- ===== Proxies tab ===== -->
@@ -104,6 +97,8 @@
     <sys:String x:Key="Str.Logs.Refresh">Làm mới</sys:String>
     <sys:String x:Key="Str.Logs.PageSize">Kích thước trang:</sys:String>
     <sys:String x:Key="Str.Logs.ClearAll">Xoá toàn bộ log</sys:String>
+    <sys:String x:Key="Str.Logs.Capacity">Số log giữ trong RAM (FIFO):</sys:String>
+    <sys:String x:Key="Str.Logs.CapacityHint">Khi vượt quá, log cũ nhất bị loại bỏ trước (100..200000).</sys:String>
     <sys:String x:Key="Str.Logs.Empty">Chưa có log tunnel. Bật Proxy ở tab Proxies và tạo lưu lượng qua proxy để xem log ở đây.</sys:String>
     <sys:String x:Key="Str.Logs.ColOutcome">Outcome</sys:String>
     <sys:String x:Key="Str.Logs.ColClientServer">Client → Server</sys:String>

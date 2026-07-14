@@ -25,6 +25,7 @@ namespace ProxyRouterWpf.ViewModels
         public LogsViewModel(AppServices svc)
         {
             _svc = svc;
+            logCapacity = _svc.Config.Config.Settings.LogCapacity;
 
             OutcomeOptions = new();
             ProxyTypeOptions = new();
@@ -83,6 +84,7 @@ namespace ProxyRouterWpf.ViewModels
 
         [ObservableProperty] bool autoRefresh = true;
         [ObservableProperty] bool isEmpty = true;
+        [ObservableProperty] int logCapacity;
 
         ProxyTunnelLogSortBy _sortBy = ProxyTunnelLogSortBy.EndAt;
         bool _sortDesc = true;
@@ -147,6 +149,18 @@ namespace ProxyRouterWpf.ViewModels
 
         [RelayCommand]
         void Refresh() => Reload();
+
+        [RelayCommand]
+        void SaveCapacity()
+        {
+            int cap = LogCapacity < 100 ? 100 : (LogCapacity > 200000 ? 200000 : LogCapacity);
+            LogCapacity = cap;
+            _svc.LogStore.SetCapacity(cap);
+            _svc.Config.Config.Settings.LogCapacity = cap;
+            _svc.Config.Save();
+            Reload();
+            MessageBox.Show(Loc.S("Str.Settings.Saved"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
         [RelayCommand]
         void ClearAll()

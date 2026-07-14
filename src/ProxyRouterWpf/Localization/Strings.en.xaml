@@ -19,21 +19,14 @@
     <sys:String x:Key="Str.Tab.Proxies">Proxies</sys:String>
     <sys:String x:Key="Str.Tab.Logs">Logs</sys:String>
     <sys:String x:Key="Str.Tab.Bandwidth">Bandwidth</sys:String>
-    <sys:String x:Key="Str.Tab.Settings">Settings</sys:String>
 
     <!-- ===== Theme toggle tooltip ===== -->
     <sys:String x:Key="Str.Theme.System">Theme: System (click to change)</sys:String>
     <sys:String x:Key="Str.Theme.Light">Theme: Light (click to change)</sys:String>
     <sys:String x:Key="Str.Theme.Dark">Theme: Dark (click to change)</sys:String>
 
-    <!-- ===== Settings ===== -->
-    <sys:String x:Key="Str.Settings.Title">Settings</sys:String>
-    <sys:String x:Key="Str.Settings.Theme">Theme</sys:String>
+    <!-- ===== Settings (theme/language in the title bar) ===== -->
     <sys:String x:Key="Str.Settings.Language">Language</sys:String>
-    <sys:String x:Key="Str.Settings.LogCapacity">Tunnel logs kept in RAM (FIFO)</sys:String>
-    <sys:String x:Key="Str.Settings.LogCapacityHint">When exceeded, the oldest log is dropped first (100..200000).</sys:String>
-    <sys:String x:Key="Str.Settings.NoteTitle">Notes</sys:String>
-    <sys:String x:Key="Str.Settings.NoteBody">• Proxy config is saved to proxyrouter.config.json next to the .exe.&#10;• Tunnel logs live only in RAM, not written to disk.&#10;• The proxy does NOT auto-start — click Start Proxy on the Proxies tab.</sys:String>
     <sys:String x:Key="Str.Settings.Saved">Settings saved.</sys:String>
 
     <!-- ===== Proxies tab ===== -->
@@ -104,6 +97,8 @@
     <sys:String x:Key="Str.Logs.Refresh">Refresh</sys:String>
     <sys:String x:Key="Str.Logs.PageSize">Page size:</sys:String>
     <sys:String x:Key="Str.Logs.ClearAll">Clear all logs</sys:String>
+    <sys:String x:Key="Str.Logs.Capacity">Logs kept in RAM (FIFO):</sys:String>
+    <sys:String x:Key="Str.Logs.CapacityHint">When exceeded, the oldest log is dropped first (100..200000).</sys:String>
     <sys:String x:Key="Str.Logs.Empty">No tunnel logs yet. Start the proxy on the Proxies tab and generate traffic through it to see logs here.</sys:String>
     <sys:String x:Key="Str.Logs.ColOutcome">Outcome</sys:String>
     <sys:String x:Key="Str.Logs.ColClientServer">Client → Server</sys:String>
