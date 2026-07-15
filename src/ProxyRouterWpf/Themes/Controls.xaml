@@ -235,8 +235,8 @@
         <Setter Property="CaretBrush" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="SelectionBrush" Value="{DynamicResource Brush.Accent}"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Padding" Value="7,4"/>
-        <Setter Property="MinHeight" Value="28"/>
+        <Setter Property="Padding" Value="7,2"/>
+        <Setter Property="Height" Value="28"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
@@ -263,6 +263,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <!-- Multi-line textboxes grow instead of the fixed single-line height -->
+            <Trigger Property="AcceptsReturn" Value="True">
+                <Setter Property="Height" Value="{x:Static sys:Double.NaN}"/>
+                <Setter Property="MinHeight" Value="28"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- ===================== PASSWORDBOX ===================== -->
@@ -273,8 +280,8 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CaretBrush" Value="{DynamicResource Brush.Text.Primary}"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Padding" Value="7,4"/>
-        <Setter Property="MinHeight" Value="28"/>
+        <Setter Property="Padding" Value="7,2"/>
+        <Setter Property="Height" Value="28"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
