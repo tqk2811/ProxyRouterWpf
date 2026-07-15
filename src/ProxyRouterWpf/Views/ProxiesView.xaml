@@ -204,19 +204,7 @@
 
                 <!-- Detail (filters + group proxies) -->
                 <Border Grid.Row="1" Style="{StaticResource Card}" Padding="12">
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" FontSize="14" Margin="0,0,0,8">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource Heading}">
-                                    <Setter Property="Text" Value="{Binding SelectedGroup.Name, StringFormat='Group: {0}'}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedGroup}" Value="{x:Null}">
-                                            <Setter Property="Text" Value="{DynamicResource Str.Proxies.SelectGroup}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                    <Grid>
                         <TabControl>
                             <TabItem Header="{DynamicResource Str.Proxies.TabFilters}">
                                 <DockPanel Margin="0,8,0,0">
@@ -268,7 +256,20 @@
                                 </DockPanel>
                             </TabItem>
                         </TabControl>
-                    </DockPanel>
+                        <!-- Group heading overlaid on the empty right side of the tab strip -->
+                        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="1" FontSize="14" Margin="0,5,8,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource Heading}">
+                                    <Setter Property="Text" Value="{Binding SelectedGroup.Name, StringFormat='Group: {0}'}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedGroup}" Value="{x:Null}">
+                                            <Setter Property="Text" Value="{DynamicResource Str.Proxies.SelectGroup}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
                 </Border>
             </Grid>
         </Grid>
