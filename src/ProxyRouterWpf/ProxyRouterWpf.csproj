@@ -10,7 +10,7 @@
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
     <Platforms>AnyCPU;x64</Platforms>
-    <ApplicationIcon></ApplicationIcon>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
