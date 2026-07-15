@@ -1,6 +1,9 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using ProxyRouterWpf.Enums;
 using ProxyRouterWpf.Localization;
 using ProxyRouterWpf.Models;
@@ -206,5 +209,277 @@ namespace ProxyRouterWpf.Views
 
         static void WarnSelect()
             => MessageBox.Show(Loc.S("Str.Proxies.SelectRow"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
+
+        // ================= Drag & drop =================
+        // Reorder rows within a grid, move proxies onto a group (assign) or back to ungrouped.
+
+        Point _dragStart;
+        DragKind? _candidateKind;
+        List<Guid> _candidateIds = new();
+        Guid? _candidateGroupId;
+        DataGridRow? _mouseDownRow;
+        bool _suppressCollapse;
+        bool _dragging;
+        DropAdorner? _adorner;
+
+        void Grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _candidateKind = null;
+            _suppressCollapse = false;
+            _mouseDownRow = null;
+
+            var grid = (DataGrid)sender;
+            var src = e.OriginalSource as DependencyObject;
+
+            // Don't start a drag from interactive cell content (Log button, MatchMode combo, edit box).
+            if (FindAncestor<ButtonBase>(src) != null || FindAncestor<ComboBox>(src) != null || FindAncestor<TextBox>(src) != null)
+                return;
+
+            var row = FindAncestor<DataGridRow>(src);
+            if (row == null) return; // header / empty area
+
+            _dragStart = e.GetPosition(null);
+            _mouseDownRow = row;
+
+            if (grid == GroupsGrid)
+            {
+                if (row.Item is not GroupRow g) return;
+                _candidateKind = DragKind.Group;
+                _candidateIds = new List<Guid> { g.Id };
+                _candidateGroupId = null;
+                return;
+            }
+
+            var ids = grid.SelectedItems.Cast<ProxySourceRow>().Select(r => r.Id).ToList();
+            if (row.Item is ProxySourceRow clicked && !ids.Contains(clicked.Id))
+                ids = new List<Guid> { clicked.Id };
+            _candidateIds = ids;
+            _candidateKind = grid == UngroupedGrid ? DragKind.UngroupedSource : DragKind.GroupSource;
+            _candidateGroupId = grid == UngroupedGrid ? null : Vm.SelectedGroup?.Id;
+
+            // Keep an existing multi-selection when clicking one of its rows, so the whole set can be dragged.
+            if (row.IsSelected && grid.SelectedItems.Count > 1
+                && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == 0)
+            {
+                _suppressCollapse = true;
+                e.Handled = true;
+            }
+        }
+
+        void Grid_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            // A plain click (no drag) on a preserved multi-selection collapses it to the clicked row.
+            if (_suppressCollapse && _mouseDownRow != null)
+            {
+                var grid = (DataGrid)sender;
+                grid.UnselectAll();
+                _mouseDownRow.IsSelected = true;
+            }
+            _suppressCollapse = false;
+            _candidateKind = null;
+            _mouseDownRow = null;
+        }
+
+        void Grid_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_dragging || _candidateKind == null || e.LeftButton != MouseButtonState.Pressed) return;
+
+            var pos = e.GetPosition(null);
+            if (Math.Abs(pos.X - _dragStart.X) < SystemParameters.MinimumHorizontalDragDistance
+                && Math.Abs(pos.Y - _dragStart.Y) < SystemParameters.MinimumVerticalDragDistance)
+                return;
+
+            var grid = (DataGrid)sender;
+
+            // For a normal (non-preserved) selection, honor the current selection at drag time.
+            if (!_suppressCollapse && _candidateKind != DragKind.Group)
+            {
+                var ids = grid.SelectedItems.Cast<ProxySourceRow>().Select(r => r.Id).ToList();
+                if (ids.Count > 0) _candidateIds = ids;
+            }
+            if (_candidateIds.Count == 0) { _candidateKind = null; return; }
+
+            grid.CommitEdit(DataGridEditingUnit.Row, true);
+
+            var data = new DataObject(ProxyDragData.Format, new ProxyDragData(_candidateKind.Value, _candidateIds, _candidateGroupId));
+            _dragging = true;
+            try { DragDrop.DoDragDrop(grid, data, DragDropEffects.Move); }
+            finally { _dragging = false; _candidateKind = null; _suppressCollapse = false; ClearAdorner(); }
+        }
+
+        void Grid_DragOver(object sender, DragEventArgs e)
+        {
+            var grid = (DataGrid)sender;
+            e.Handled = true;
+
+            if (e.Data.GetData(ProxyDragData.Format) is not ProxyDragData d)
+            {
+                e.Effects = DragDropEffects.None;
+                ClearAdorner();
+                return;
+            }
+
+            if (IsReorderTarget(grid, d))
+            {
+                Ensure(grid).SetLine(LineY(grid, RowUnderMouse(grid, e), e));
+                e.Effects = DragDropEffects.Move;
+            }
+            else if (grid == GroupsGrid && IsProxyKind(d))
+            {
+                var row = RowUnderMouse(grid, e);
+                if (row?.Item is GroupRow g && g.Id != d.SourceGroupId)
+                {
+                    var tl = row.TranslatePoint(new Point(0, 0), grid);
+                    Ensure(grid).SetHighlight(new Rect(tl, new Size(grid.ActualWidth, row.ActualHeight)));
+                    e.Effects = DragDropEffects.Move;
+                }
+                else { ClearAdorner(); e.Effects = DragDropEffects.None; }
+            }
+            else if (grid == UngroupedGrid && d.Kind == DragKind.GroupSource)
+            {
+                Ensure(grid).SetHighlight(new Rect(0, 0, grid.ActualWidth, grid.ActualHeight));
+                e.Effects = DragDropEffects.Move;
+            }
+            else
+            {
+                ClearAdorner();
+                e.Effects = DragDropEffects.None;
+            }
+        }
+
+        void Grid_DragLeave(object sender, DragEventArgs e) => ClearAdorner();
+
+        void Grid_Drop(object sender, DragEventArgs e)
+        {
+            ClearAdorner();
+            e.Handled = true;
+            if (e.Data.GetData(ProxyDragData.Format) is not ProxyDragData d) return;
+            var grid = (DataGrid)sender;
+
+            if (grid == UngroupedGrid) DropOnUngrouped(d, e);
+            else if (grid == GroupSourcesGrid) DropOnGroupSources(d, e);
+            else if (grid == GroupsGrid) DropOnGroups(d, e);
+        }
+
+        void DropOnUngrouped(ProxyDragData d, DragEventArgs e)
+        {
+            if (d.Kind == DragKind.UngroupedSource)
+            {
+                var current = Vm.UngroupedSources.Select(r => r.Id).ToList();
+                var order = BuildReorder(current, d.Ids.ToHashSet(), InsertIndex(UngroupedGrid, e, Vm.UngroupedSources));
+                if (order.SequenceEqual(current)) return;
+                if (BlockIfRunning()) return;
+                Vm.ReorderSources(null, order);
+            }
+            else if (d.Kind == DragKind.GroupSource)
+            {
+                if (BlockIfRunning()) return;
+                Vm.AssignGroup(null, d.Ids);
+            }
+        }
+
+        void DropOnGroupSources(ProxyDragData d, DragEventArgs e)
+        {
+            if (Vm.SelectedGroup is not GroupRow sel) return;
+            if (d.Kind != DragKind.GroupSource || d.SourceGroupId != sel.Id) return;
+            var current = Vm.GroupSources.Select(r => r.Id).ToList();
+            var order = BuildReorder(current, d.Ids.ToHashSet(), InsertIndex(GroupSourcesGrid, e, Vm.GroupSources));
+            if (order.SequenceEqual(current)) return;
+            if (BlockIfRunning()) return;
+            Vm.ReorderSources(sel.Id, order);
+        }
+
+        void DropOnGroups(ProxyDragData d, DragEventArgs e)
+        {
+            if (d.Kind == DragKind.Group)
+            {
+                var current = Vm.Groups.Select(g => g.Id).ToList();
+                var order = BuildReorder(current, d.Ids.ToHashSet(), InsertIndex(GroupsGrid, e, Vm.Groups));
+                if (order.SequenceEqual(current)) return;
+                Vm.ReorderGroups(order);
+            }
+            else if (IsProxyKind(d))
+            {
+                if (RowUnderMouse(GroupsGrid, e)?.Item is not GroupRow g) return;
+                if (g.Id == d.SourceGroupId) return;
+                if (BlockIfRunning()) return;
+                Vm.AssignGroup(g.Id, d.Ids);
+            }
+        }
+
+        // ---- drag-drop helpers ----
+        static bool IsProxyKind(ProxyDragData d) => d.Kind is DragKind.UngroupedSource or DragKind.GroupSource;
+
+        bool IsReorderTarget(DataGrid grid, ProxyDragData d)
+        {
+            if (grid == UngroupedGrid) return d.Kind == DragKind.UngroupedSource;
+            if (grid == GroupSourcesGrid) return d.Kind == DragKind.GroupSource && Vm.SelectedGroup != null && d.SourceGroupId == Vm.SelectedGroup.Id;
+            if (grid == GroupsGrid) return d.Kind == DragKind.Group;
+            return false;
+        }
+
+        static T? FindAncestor<T>(DependencyObject? d) where T : DependencyObject
+        {
+            while (d != null && d is not T)
+                d = d is Visual || d is System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetParent(d) : LogicalTreeHelper.GetParent(d);
+            return d as T;
+        }
+
+        static DataGridRow? RowUnderMouse(DataGrid grid, DragEventArgs e)
+            => FindAncestor<DataGridRow>(grid.InputHitTest(e.GetPosition(grid)) as DependencyObject);
+
+        // Insert position (0..Count) for a reorder, using the midpoint of the row under the cursor.
+        static int InsertIndex(DataGrid grid, DragEventArgs e, System.Collections.IList items)
+        {
+            var row = RowUnderMouse(grid, e);
+            if (row == null) return items.Count;
+            int idx = items.IndexOf(row.Item);
+            if (idx < 0) return items.Count;
+            return e.GetPosition(row).Y > row.ActualHeight / 2 ? idx + 1 : idx;
+        }
+
+        static List<Guid> BuildReorder(IReadOnlyList<Guid> current, HashSet<Guid> dragged, int insertIndex)
+        {
+            Guid? anchor = insertIndex < current.Count ? current[insertIndex] : null;
+            var result = current.Where(id => !dragged.Contains(id)).ToList();
+            int target = anchor is Guid a ? result.IndexOf(a) : result.Count;
+            if (target < 0) target = result.Count;
+            result.InsertRange(target, current.Where(dragged.Contains));
+            return result;
+        }
+
+        static double LineY(DataGrid grid, DataGridRow? row, DragEventArgs e)
+        {
+            if (row == null)
+            {
+                for (int i = grid.Items.Count - 1; i >= 0; i--)
+                    if (grid.ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow r)
+                        return r.TranslatePoint(new Point(0, r.ActualHeight), grid).Y;
+                return 0;
+            }
+            bool after = e.GetPosition(row).Y > row.ActualHeight / 2;
+            return row.TranslatePoint(new Point(0, after ? row.ActualHeight : 0), grid).Y;
+        }
+
+        DropAdorner Ensure(DataGrid grid)
+        {
+            if (_adorner != null && !ReferenceEquals(_adorner.AdornedElement, grid))
+                ClearAdorner();
+            if (_adorner == null)
+            {
+                _adorner = new DropAdorner(grid);
+                AdornerLayer.GetAdornerLayer(grid)?.Add(_adorner);
+            }
+            return _adorner;
+        }
+
+        void ClearAdorner()
+        {
+            if (_adorner != null)
+            {
+                AdornerLayer.GetAdornerLayer((UIElement)_adorner.AdornedElement)?.Remove(_adorner);
+                _adorner = null;
+            }
+        }
     }
 }

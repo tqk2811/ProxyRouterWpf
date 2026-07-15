@@ -305,6 +305,14 @@ namespace ProxyRouterWpf.ViewModels
             catch (Exception ex) { ShowError(ex); }
         }
 
+        /// <summary>Persist a drag-drop reorder of proxy sources within one group (null = ungrouped).</summary>
+        public void ReorderSources(Guid? groupId, IReadOnlyList<Guid> orderedIds)
+        {
+            if (orderedIds.Count == 0) return;
+            try { _svc.Sources.Reorder(groupId, orderedIds); ReloadAll(); }
+            catch (Exception ex) { ShowError(ex); }
+        }
+
         // ---------- Group CRUD ----------
         public void AddGroup(string name, ProxySourceGroupMatchMode mode)
         {
@@ -340,6 +348,14 @@ namespace ProxyRouterWpf.ViewModels
             if (target < 0 || target >= ids.Count) return;
             (ids[idx], ids[target]) = (ids[target], ids[idx]);
             try { _svc.Groups.Reorder(ids); ReloadGroups(); }
+            catch (Exception ex) { ShowError(ex); }
+        }
+
+        /// <summary>Persist a drag-drop reorder of the whole group list (updates priorities).</summary>
+        public void ReorderGroups(IReadOnlyList<Guid> orderedIds)
+        {
+            if (orderedIds.Count == 0) return;
+            try { _svc.Groups.Reorder(orderedIds); ReloadGroups(); }
             catch (Exception ex) { ShowError(ex); }
         }
 
