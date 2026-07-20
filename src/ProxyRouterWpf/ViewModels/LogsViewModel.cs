@@ -73,8 +73,9 @@ namespace ProxyRouterWpf.ViewModels
         [ObservableProperty] string? clientServer;
         [ObservableProperty] string? targetHost;
         [ObservableProperty] string? pickedSource;
-        [ObservableProperty] DateTime? fromDate;
-        [ObservableProperty] DateTime? toDate;
+        /// <summary>Date and time of day in one value (see DateTimePicker). Null = no bound on that side.</summary>
+        [ObservableProperty] DateTime? fromDateTime;
+        [ObservableProperty] DateTime? toDateTime;
 
         [ObservableProperty] int page = 1;
         [ObservableProperty] int pageSize = 50;
@@ -109,8 +110,8 @@ namespace ProxyRouterWpf.ViewModels
                 TargetHost = TargetHost,
                 PickedSource = PickedSource,
                 PickedSourceProxyType = SelectedProxyType?.Value,
-                FromUtc = FromDate?.ToUniversalTime(),
-                ToUtc = ToDate?.Date.AddDays(1).AddTicks(-1).ToUniversalTime(),
+                FromUtc = FromDateTime?.ToUniversalTime(),
+                ToUtc = UpperBound(ToDateTime)?.ToUniversalTime(),
                 SortBy = _sortBy,
                 SortDesc = _sortDesc,
             };
@@ -124,6 +125,16 @@ namespace ProxyRouterWpf.ViewModels
             PageInfo = Loc.F("Str.Logs.PageInfo", Page, TotalPages, TotalCount, _svc.LogStore.Capacity);
         }
 
+        /// <summary>
+        /// Upper bound of the To filter. A value left at midnight reads as "that whole day" rather
+        /// than "up to 00:00", which would otherwise return nothing for a same-day filter.
+        /// </summary>
+        static DateTime? UpperBound(DateTime? to)
+        {
+            if (to is null) return null;
+            return to.Value.TimeOfDay == TimeSpan.Zero ? to.Value.AddDays(1).AddTicks(-1) : to.Value;
+        }
+
         [RelayCommand]
         void Apply() { Page = 1; Reload(); }
 
@@ -135,8 +146,8 @@ namespace ProxyRouterWpf.ViewModels
             ClientServer = null;
             TargetHost = null;
             PickedSource = null;
-            FromDate = null;
-            ToDate = null;
+            FromDateTime = null;
+            ToDateTime = null;
             Page = 1;
             Reload();
         }

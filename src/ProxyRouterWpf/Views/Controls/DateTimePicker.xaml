@@ -1,0 +1,58 @@
+<UserControl x:Class="ProxyRouterWpf.Views.Controls.DateTimePicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" x:Name="Root" Height="28">
+    <Border x:Name="Bd" CornerRadius="6" SnapsToDevicePixels="True"
+            Background="{DynamicResource Brush.Control.Background}"
+            BorderBrush="{DynamicResource Brush.Control.BorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Single input holding both date and time; Tag drives the placeholder (see TextBox style). -->
+            <TextBox x:Name="PART_TextBox" Grid.Column="0" BorderThickness="0" Background="Transparent"
+                     Height="26" VerticalContentAlignment="Center"
+                     Tag="{Binding Placeholder, ElementName=Root}"
+                     TextChanged="PART_TextBox_TextChanged"/>
+
+            <ToggleButton x:Name="PART_Button" Grid.Column="1" Width="28" Focusable="False" Cursor="Hand"
+                          IsChecked="{Binding IsOpen, ElementName=PART_Popup, Mode=TwoWay}">
+                <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="Transparent">
+                            <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{DynamicResource Brush.Text.Secondary}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
+
+            <Popup x:Name="PART_Popup" Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
+                   PlacementTarget="{Binding ElementName=Bd}">
+                <Border CornerRadius="6" Margin="0,4,0,0" BorderThickness="1"
+                        Background="{DynamicResource Brush.Surface.Background}"
+                        BorderBrush="{DynamicResource Brush.Surface.BorderBrush}">
+                    <StackPanel>
+                        <Calendar x:Name="PART_Calendar" SelectedDatesChanged="PART_Calendar_SelectedDatesChanged"/>
+                        <!-- Time row: the calendar only covers the date half. -->
+                        <DockPanel Margin="10,0,10,10" LastChildFill="False">
+                            <TextBlock Text="{DynamicResource Str.Common.Time}" VerticalAlignment="Center"
+                                       Margin="0,0,6,0" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="12"/>
+                            <ComboBox x:Name="PART_Hour" Width="58" SelectionChanged="PART_Time_SelectionChanged"/>
+                            <TextBlock Text=":" VerticalAlignment="Center" Margin="4,0"
+                                       Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                            <ComboBox x:Name="PART_Minute" Width="58" SelectionChanged="PART_Time_SelectionChanged"/>
+                            <Button Content="{DynamicResource Str.Common.Clear}" DockPanel.Dock="Right"
+                                    Click="Clear_Click" Margin="8,0,0,0" Padding="10,0"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+            </Popup>
+        </Grid>
+    </Border>
+</UserControl>

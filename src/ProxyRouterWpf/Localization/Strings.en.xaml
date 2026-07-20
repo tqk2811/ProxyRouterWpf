@@ -14,6 +14,8 @@
     <sys:String x:Key="Str.Common.Copy">Copy</sys:String>
     <sys:String x:Key="Str.Common.Confirm">Confirm</sys:String>
     <sys:String x:Key="Str.Common.Error">Error</sys:String>
+    <sys:String x:Key="Str.Common.Clear">Clear</sys:String>
+    <sys:String x:Key="Str.Common.Time">Time</sys:String>
 
     <!-- ===== Tabs ===== -->
     <sys:String x:Key="Str.Tab.Proxies">Proxies</sys:String>
@@ -92,9 +94,16 @@
     <!-- ===== Logs tab ===== -->
     <sys:String x:Key="Str.Logs.AllOutcome">All outcomes</sys:String>
     <sys:String x:Key="Str.Logs.AllType">All types</sys:String>
-    <sys:String x:Key="Str.Logs.TagClientServer">Client/Server</sys:String>
-    <sys:String x:Key="Str.Logs.TagTargetHost">Target host</sys:String>
-    <sys:String x:Key="Str.Logs.TagPickedSource">Picked source</sys:String>
+    <sys:String x:Key="Str.Logs.TagClientServer">Client/Server ip:port</sys:String>
+    <sys:String x:Key="Str.Logs.TagTargetHost">Target host:port</sys:String>
+    <sys:String x:Key="Str.Logs.TagPickedSource">Picked source ip:port</sys:String>
+    <sys:String x:Key="Str.Logs.TipClientServer">Filter by client or server address. Accepts an address ("192.168"), a port (":8080") or both ("192.168.1.5:8080").</sys:String>
+    <sys:String x:Key="Str.Logs.TipTargetHost">Filter by the destination the client asked for. Accepts a host ("google.com"), a port (":443") or both ("google.com:443").</sys:String>
+    <sys:String x:Key="Str.Logs.TipPickedSource">Filter by the upstream proxy that was picked. Accepts an address, a port (":1080") or both.</sys:String>
+    <sys:String x:Key="Str.Logs.TagFrom">From yyyy-MM-dd HH:mm</sys:String>
+    <sys:String x:Key="Str.Logs.TagTo">To yyyy-MM-dd HH:mm</sys:String>
+    <sys:String x:Key="Str.Logs.TipFrom">Oldest log to show. Type the date and time in one box, or pick them from the calendar button. A date with no time means 00:00.</sys:String>
+    <sys:String x:Key="Str.Logs.TipTo">Newest log to show. Type the date and time in one box, or pick them from the calendar button. A date left at 00:00 means the whole day.</sys:String>
     <sys:String x:Key="Str.Logs.Filter">Filter</sys:String>
     <sys:String x:Key="Str.Logs.ClearFilter">Clear filters</sys:String>
     <sys:String x:Key="Str.Logs.AutoRefresh">Auto refresh</sys:String>

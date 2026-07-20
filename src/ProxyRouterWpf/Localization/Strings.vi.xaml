@@ -14,6 +14,8 @@
     <sys:String x:Key="Str.Common.Copy">Copy</sys:String>
     <sys:String x:Key="Str.Common.Confirm">Xác nhận</sys:String>
     <sys:String x:Key="Str.Common.Error">Lỗi</sys:String>
+    <sys:String x:Key="Str.Common.Clear">Xoá</sys:String>
+    <sys:String x:Key="Str.Common.Time">Giờ</sys:String>
 
     <!-- ===== Tabs ===== -->
     <sys:String x:Key="Str.Tab.Proxies">Proxies</sys:String>
@@ -92,9 +94,16 @@
     <!-- ===== Logs tab ===== -->
     <sys:String x:Key="Str.Logs.AllOutcome">Tất cả outcome</sys:String>
     <sys:String x:Key="Str.Logs.AllType">Tất cả loại</sys:String>
-    <sys:String x:Key="Str.Logs.TagClientServer">Client/Server</sys:String>
-    <sys:String x:Key="Str.Logs.TagTargetHost">Target host</sys:String>
-    <sys:String x:Key="Str.Logs.TagPickedSource">Picked source</sys:String>
+    <sys:String x:Key="Str.Logs.TagClientServer">Client/Server ip:port</sys:String>
+    <sys:String x:Key="Str.Logs.TagTargetHost">Target host:port</sys:String>
+    <sys:String x:Key="Str.Logs.TagPickedSource">Proxy nguồn ip:port</sys:String>
+    <sys:String x:Key="Str.Logs.TipClientServer">Lọc theo địa chỉ client hoặc server. Nhập địa chỉ ("192.168"), cổng (":8080") hoặc cả hai ("192.168.1.5:8080").</sys:String>
+    <sys:String x:Key="Str.Logs.TipTargetHost">Lọc theo đích mà client yêu cầu. Nhập host ("google.com"), cổng (":443") hoặc cả hai ("google.com:443").</sys:String>
+    <sys:String x:Key="Str.Logs.TipPickedSource">Lọc theo proxy nguồn đã được chọn. Nhập địa chỉ, cổng (":1080") hoặc cả hai.</sys:String>
+    <sys:String x:Key="Str.Logs.TagFrom">Từ yyyy-MM-dd HH:mm</sys:String>
+    <sys:String x:Key="Str.Logs.TagTo">Đến yyyy-MM-dd HH:mm</sys:String>
+    <sys:String x:Key="Str.Logs.TipFrom">Log cũ nhất muốn xem. Gõ cả ngày lẫn giờ trong một ô, hoặc bấm nút lịch để chọn. Ngày không kèm giờ = 00:00.</sys:String>
+    <sys:String x:Key="Str.Logs.TipTo">Log mới nhất muốn xem. Gõ cả ngày lẫn giờ trong một ô, hoặc bấm nút lịch để chọn. Ngày để giờ 00:00 = trọn ngày đó.</sys:String>
     <sys:String x:Key="Str.Logs.Filter">Lọc</sys:String>
     <sys:String x:Key="Str.Logs.ClearFilter">Xoá lọc</sys:String>
     <sys:String x:Key="Str.Logs.AutoRefresh">Tự làm mới</sys:String>

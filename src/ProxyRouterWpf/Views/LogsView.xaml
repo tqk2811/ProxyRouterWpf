@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:ProxyRouterWpf.ViewModels"
+             xmlns:ctl="clr-namespace:ProxyRouterWpf.Views.Controls"
              d:DataContext="{d:DesignInstance vm:LogsViewModel}"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,11 +20,16 @@
                 <WrapPanel>
                     <ComboBox Width="150" Margin="0,0,8,8" ItemsSource="{Binding OutcomeOptions}" SelectedItem="{Binding SelectedOutcome}"/>
                     <ComboBox Width="120" Margin="0,0,8,8" ItemsSource="{Binding ProxyTypeOptions}" SelectedItem="{Binding SelectedProxyType}"/>
-                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding ClientServer, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Str.Logs.TagClientServer}"/>
-                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding TargetHost, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Str.Logs.TagTargetHost}"/>
-                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding PickedSource, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Str.Logs.TagPickedSource}"/>
-                    <DatePicker Width="130" Margin="0,0,8,8" SelectedDate="{Binding FromDate}"/>
-                    <DatePicker Width="130" Margin="0,0,8,8" SelectedDate="{Binding ToDate}"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding ClientServer, UpdateSourceTrigger=PropertyChanged}"
+                             Tag="{DynamicResource Str.Logs.TagClientServer}" ToolTip="{DynamicResource Str.Logs.TipClientServer}"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding TargetHost, UpdateSourceTrigger=PropertyChanged}"
+                             Tag="{DynamicResource Str.Logs.TagTargetHost}" ToolTip="{DynamicResource Str.Logs.TipTargetHost}"/>
+                    <TextBox Width="160" Margin="0,0,8,8" Text="{Binding PickedSource, UpdateSourceTrigger=PropertyChanged}"
+                             Tag="{DynamicResource Str.Logs.TagPickedSource}" ToolTip="{DynamicResource Str.Logs.TipPickedSource}"/>
+                    <ctl:DateTimePicker Width="190" Margin="0,0,8,8" SelectedDateTime="{Binding FromDateTime, Mode=TwoWay}"
+                                        Placeholder="{DynamicResource Str.Logs.TagFrom}" ToolTip="{DynamicResource Str.Logs.TipFrom}"/>
+                    <ctl:DateTimePicker Width="190" Margin="0,0,8,8" SelectedDateTime="{Binding ToDateTime, Mode=TwoWay}"
+                                        Placeholder="{DynamicResource Str.Logs.TagTo}" ToolTip="{DynamicResource Str.Logs.TipTo}"/>
                     <Button Content="{DynamicResource Str.Logs.Filter}" Style="{StaticResource AccentButton}" Command="{Binding ApplyCommand}" Margin="0,0,8,8"/>
                     <Button Content="{DynamicResource Str.Logs.ClearFilter}" Command="{Binding ClearFiltersCommand}" Margin="0,0,8,8"/>
                 </WrapPanel>
