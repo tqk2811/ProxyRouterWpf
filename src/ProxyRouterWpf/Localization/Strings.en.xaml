@@ -42,7 +42,10 @@
     <sys:String x:Key="Str.Proxies.SaveConfig">Save config</sys:String>
     <sys:String x:Key="Str.Proxies.Output">Proxy Output</sys:String>
     <sys:String x:Key="Str.Proxies.OutputIpTip">IP used to build the proxy output list</sys:String>
-    <sys:String x:Key="Str.Proxies.UngroupedTitle">Source proxies (Ungrouped) — right-click for actions</sys:String>
+    <sys:String x:Key="Str.Proxies.HostsTitle">Hosted proxies — one listener each · right-click for actions</sys:String>
+    <sys:String x:Key="Str.Proxies.UngroupedTitle">Unassigned proxies — drag into Hosts or a group</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuMoveToHosts">Move to Hosts</sys:String>
+    <sys:String x:Key="Str.Proxies.MenuMoveToUngrouped">Move to Unassigned</sys:String>
     <sys:String x:Key="Str.Proxies.ColProxy">Proxy</sys:String>
     <sys:String x:Key="Str.Proxies.ColType">Type</sys:String>
     <sys:String x:Key="Str.Proxies.MenuAddProxy">Add proxy…</sys:String>
@@ -70,7 +73,7 @@
     <sys:String x:Key="Str.Proxies.NoProxyOutput">(no proxy)</sys:String>
     <sys:String x:Key="Str.Proxies.StartPortRange">Start Port must be within 10000..65535.</sys:String>
     <sys:String x:Key="Str.Proxies.EnableProtocol">Enable at least one protocol (HTTP/SOCKS4/SOCKS5) before starting.</sys:String>
-    <sys:String x:Key="Str.Proxies.NoUngrouped">No source proxies (Ungrouped). Add a proxy before starting.</sys:String>
+    <sys:String x:Key="Str.Proxies.NoHosts">No hosted proxies. Add or drag a proxy into Hosts before starting.</sys:String>
     <sys:String x:Key="Str.Proxies.NoListenerStarted">Could not start any listener (ports may be in use).</sys:String>
     <sys:String x:Key="Str.Proxies.NoProxyToCopy">No proxy to copy.</sys:String>
     <sys:String x:Key="Str.Proxies.AddedSkipped">Added {0}, skipped {1}.</sys:String>
@@ -134,7 +137,8 @@
     <sys:String x:Key="Str.Dialog.Source.Address">Address</sys:String>
     <sys:String x:Key="Str.Dialog.Source.Username">Username</sys:String>
     <sys:String x:Key="Str.Dialog.Source.Password">Password</sys:String>
-    <sys:String x:Key="Str.Dialog.Source.Ungrouped">(Ungrouped)</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Hosts">(Hosts)</sys:String>
+    <sys:String x:Key="Str.Dialog.Source.Ungrouped">(Unassigned)</sys:String>
     <sys:String x:Key="Str.Dialog.Source.PortInvalid">Invalid port (1..65535).</sys:String>
     <sys:String x:Key="Str.Dialog.Source.AddressRequired">Enter an address.</sys:String>
 

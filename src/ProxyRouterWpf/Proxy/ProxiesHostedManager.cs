@@ -1,5 +1,6 @@
 using System.Net;
 using Microsoft.Extensions.Logging;
+using ProxyRouterWpf.Models;
 using ProxyRouterWpf.Proxy.EventLogs;
 using ProxyRouterWpf.Services;
 
@@ -7,7 +8,8 @@ namespace ProxyRouterWpf.Proxy
 {
     /// <summary>
     /// Owns the set of running <see cref="ProxySession"/> listeners. Single-user port: one listener
-    /// per root (ungrouped) proxy source, on port <c>StartPort + i</c>. Never auto-starts — the UI
+    /// per host proxy source (<see cref="ProxySourceGroups.HostGroupId"/>), on port
+    /// <c>StartPort + i</c>. Never auto-starts — the UI
     /// must call <see cref="Start"/> explicitly.
     /// </summary>
     public sealed class ProxiesHostedManager : IDisposable
@@ -55,8 +57,8 @@ namespace ProxyRouterWpf.Proxy
         }
 
         /// <summary>
-        /// Starts a listener for every ungrouped proxy source. Returns the number started. Requires
-        /// at least one protocol enabled and at least one ungrouped source (both validated by caller).
+        /// Starts a listener for every host proxy source. Returns the number started. Requires
+        /// at least one protocol enabled and at least one host source (both validated by caller).
         /// </summary>
         public int Start()
         {
@@ -66,7 +68,7 @@ namespace ProxyRouterWpf.Proxy
                 if (_sessions.Count > 0)
                     return _sessions.Count; // already running
 
-                var sources = _sourceService.ListByGroup(null);
+                var sources = _sourceService.ListByGroup(ProxySourceGroups.HostGroupId);
                 var configure = _configureService.Get();
                 var bindAddress = IPAddress.TryParse(configure.ListenAddress, out var parsed) ? parsed : IPAddress.Any;
                 _logger.LogInformation("Start requested SourceCount={SourceCount}, StartPort={StartPort}, ListenAddress={ListenAddress}", sources.Count, configure.StartPort, bindAddress);

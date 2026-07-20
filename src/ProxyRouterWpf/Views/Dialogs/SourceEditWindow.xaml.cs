@@ -19,11 +19,16 @@ namespace ProxyRouterWpf.Views.Dialogs
         {
             InitializeComponent();
 
-            var choices = new List<GroupChoice> { new() { Label = Loc.S("Str.Dialog.Source.Ungrouped"), Id = null } };
+            var choices = new List<GroupChoice>
+            {
+                new() { Label = Loc.S("Str.Dialog.Source.Hosts"), Id = ProxySourceGroups.HostGroupId },
+                new() { Label = Loc.S("Str.Dialog.Source.Ungrouped"), Id = null },
+            };
             foreach (var g in groups)
                 choices.Add(new GroupChoice { Label = g.Name, Id = g.Id });
             GroupBox.ItemsSource = choices;
-            GroupBox.SelectedItem = choices.FirstOrDefault(c => c.Id == existing.GroupId) ?? choices[0];
+            GroupBox.SelectedItem = choices.FirstOrDefault(c => c.Id == existing.GroupId)
+                ?? choices.First(c => c.Id == null);
 
             TypeBox.ItemsSource = Enum.GetValues<ProxyType>();
             TypeBox.SelectedItem = existing.ProxyType;

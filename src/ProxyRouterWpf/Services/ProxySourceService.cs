@@ -63,7 +63,9 @@ namespace ProxyRouterWpf.Services
             return (max ?? -1) + 1;
         }
 
-        bool GroupExists(Guid groupId) => Groups.Any(x => x.Id == groupId);
+        // The host group is a sentinel, not a stored routing group, so it must pass validation too.
+        bool GroupExists(Guid groupId)
+            => groupId == ProxySourceGroups.HostGroupId || Groups.Any(x => x.Id == groupId);
 
         public Guid Create(CreateProxySourceVM model)
         {

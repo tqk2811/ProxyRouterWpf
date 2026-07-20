@@ -57,6 +57,10 @@ namespace ProxyRouterWpf.ViewModels
         HashSet<Guid> _activeIds = new();
 
         // ---- Collections ----
+        /// <summary>Proxies that get a local listener each (group <see cref="ProxySourceGroups.HostGroupId"/>).</summary>
+        public ObservableCollection<ProxySourceRow> HostSources { get; } = new();
+
+        /// <summary>Holding pool: proxies not hosted and not assigned to a routing group.</summary>
         public ObservableCollection<ProxySourceRow> UngroupedSources { get; } = new();
         public ObservableCollection<GroupRow> Groups { get; } = new();
         public ObservableCollection<ProxySourceRow> GroupSources { get; } = new();
@@ -121,6 +125,10 @@ namespace ProxyRouterWpf.ViewModels
 
         void ReloadSourceRows()
         {
+            HostSources.Clear();
+            foreach (var s in _svc.Sources.ListByGroup(ProxySourceGroups.HostGroupId))
+                HostSources.Add(new ProxySourceRow(s, _activeIds.Contains(s.Id)));
+
             UngroupedSources.Clear();
             foreach (var s in _svc.Sources.ListByGroup(null))
                 UngroupedSources.Add(new ProxySourceRow(s, _activeIds.Contains(s.Id)));
@@ -185,9 +193,9 @@ namespace ProxyRouterWpf.ViewModels
             }
             if (!SaveConfig())
                 return;
-            if (_svc.Sources.ListByGroup(null).Count == 0)
+            if (_svc.Sources.ListByGroup(ProxySourceGroups.HostGroupId).Count == 0)
             {
-                MessageBox.Show(Loc.S("Str.Proxies.NoUngrouped"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Loc.S("Str.Proxies.NoHosts"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -233,7 +241,7 @@ namespace ProxyRouterWpf.ViewModels
         List<string> BuildOutputLines()
         {
             var ip = string.IsNullOrEmpty(SelectedIp) ? "0.0.0.0" : SelectedIp!;
-            int count = IsRunning ? _activeIds.Count : UngroupedSources.Count;
+            int count = IsRunning ? _activeIds.Count : HostSources.Count;
             var result = new List<string>();
             bool socks4 = string.Equals(OutputFormat, "socks4", StringComparison.OrdinalIgnoreCase);
             for (int i = 0; i < count; i++)
