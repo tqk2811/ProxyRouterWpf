@@ -247,9 +247,19 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             SnapsToDevicePixels="True">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                        <Grid>
+                            <!-- Placeholder: put the hint text in the TextBox's Tag -->
+                            <TextBlock x:Name="Watermark" Text="{TemplateBinding Tag}" IsHitTestVisible="False"
+                                       Foreground="{DynamicResource Brush.Text.Secondary}"
+                                       Margin="{TemplateBinding Padding}" TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center" Visibility="Collapsed"/>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                        </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Control.Hover.BorderBrush}"/>
                         </Trigger>
