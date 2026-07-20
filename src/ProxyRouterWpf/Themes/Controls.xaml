@@ -684,6 +684,20 @@
         <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
     </Style>
 
+    <!-- Kéo thả để đổi kích thước cột: Thumb phải có tên PART_*HeaderGripper -->
+    <Style x:Key="ColumnHeaderGripper" TargetType="Thumb">
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Cursor" Value="SizeWE"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border Background="{TemplateBinding Background}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="{DynamicResource Brush.Surface.Background}"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
@@ -695,10 +709,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridColumnHeader">
-                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"
-                            BorderBrush="{DynamicResource Brush.Surface.BorderBrush}" BorderThickness="0,0,0,1">
-                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                    </Border>
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"
+                                BorderBrush="{DynamicResource Brush.Surface.BorderBrush}" BorderThickness="0,0,1,1">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Margin="-4,0,0,0"
+                               Style="{StaticResource ColumnHeaderGripper}"/>
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Margin="0,0,-4,0"
+                               Style="{StaticResource ColumnHeaderGripper}"/>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
