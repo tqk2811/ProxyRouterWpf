@@ -40,7 +40,8 @@
                     <ComboBox Width="80" ItemsSource="{Binding PageSizeOptions}" SelectedItem="{Binding PageSize}"/>
                     <TextBlock Text="{DynamicResource Str.Logs.Capacity}" VerticalAlignment="Center" Margin="20,0,6,0" Style="{StaticResource Subtle}"
                                ToolTip="{DynamicResource Str.Logs.CapacityHint}"/>
-                    <TextBox Width="90" VerticalAlignment="Center" Text="{Binding LogCapacity, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Width="90" VerticalAlignment="Center" MaxLength="6" ctl:NumericInput.DigitsOnly="True"
+                             Text="{Binding LogCapacity, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="{DynamicResource Str.Logs.CapacityHint}"/>
                     <Button Content="{DynamicResource Str.Common.Save}" Command="{Binding SaveCapacityCommand}" Margin="6,0,0,0"/>
                     <Button Content="{DynamicResource Str.Logs.ClearAll}" Style="{StaticResource DangerButton}" Command="{Binding ClearAllCommand}" HorizontalAlignment="Right" Margin="16,0,0,0"/>
