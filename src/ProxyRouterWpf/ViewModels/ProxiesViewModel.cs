@@ -68,6 +68,13 @@ namespace ProxyRouterWpf.ViewModels
 
         [ObservableProperty] GroupRow? selectedGroup;
 
+        /// <summary>
+        /// True when the selected group matches traffic but holds no proxy. The engine then falls
+        /// back to a direct connection (<see cref="Enums.ProxyTunnelRoutingDecision.GroupEmptyFallback"/>),
+        /// which is easy to hit by accident — the UI warns about it.
+        /// </summary>
+        public bool IsSelectedGroupEmpty => SelectedGroup != null && GroupSources.Count == 0;
+
         partial void OnSelectedGroupChanged(GroupRow? value) => LoadGroupDetail();
         partial void OnIsRunningChanged(bool value) => OnPropertyChanged(nameof(CanEdit));
 
@@ -138,11 +145,14 @@ namespace ProxyRouterWpf.ViewModels
         {
             GroupSources.Clear();
             Filters.Clear();
-            if (SelectedGroup == null) return;
-            foreach (var s in _svc.Sources.ListByGroup(SelectedGroup.Id))
-                GroupSources.Add(new ProxySourceRow(s, _activeIds.Contains(s.Id)));
-            foreach (var f in _svc.Filters.ListByGroup(SelectedGroup.Id))
-                Filters.Add(new FilterRow(f));
+            if (SelectedGroup != null)
+            {
+                foreach (var s in _svc.Sources.ListByGroup(SelectedGroup.Id))
+                    GroupSources.Add(new ProxySourceRow(s, _activeIds.Contains(s.Id)));
+                foreach (var f in _svc.Filters.ListByGroup(SelectedGroup.Id))
+                    Filters.Add(new FilterRow(f));
+            }
+            OnPropertyChanged(nameof(IsSelectedGroupEmpty));
         }
 
         // ---------- Config save ----------

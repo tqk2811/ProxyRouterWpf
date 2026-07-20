@@ -64,6 +64,7 @@
     <sys:String x:Key="Str.Proxies.ColFilter">Filter</sys:String>
     <sys:String x:Key="Str.Proxies.TabGroupProxies">Proxy trong nhóm</sys:String>
     <sys:String x:Key="Str.Proxies.MenuRemoveFromGroup">Bỏ khỏi nhóm</sys:String>
+    <sys:String x:Key="Str.Proxies.EmptyGroupDirect">Nhóm này không có proxy — traffic khớp nhóm sẽ đi thẳng ra internet, không qua proxy nào.</sys:String>
 
     <!-- Proxies tab — ViewModel / code-behind messages -->
     <sys:String x:Key="Str.Proxies.Stopped">Đã dừng</sys:String>

@@ -287,6 +287,15 @@
                             </TabItem>
                             <TabItem Header="{DynamicResource Str.Proxies.TabGroupProxies}">
                                 <DockPanel Margin="0,8,0,0">
+                                    <!-- An empty group matches traffic but has nothing to route through,
+                                         so the engine sends it out directly. Warn before that surprises anyone. -->
+                                    <Border DockPanel.Dock="Top" CornerRadius="6" Padding="10,6" Margin="0,0,0,8"
+                                            Background="{DynamicResource Brush.Accent.Subtle}"
+                                            Visibility="{Binding IsSelectedGroupEmpty, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="{DynamicResource Str.Proxies.EmptyGroupDirect}"
+                                                   Foreground="{DynamicResource Brush.Accent}"
+                                                   FontSize="12" TextWrapping="Wrap"/>
+                                    </Border>
                                     <DataGrid x:Name="GroupSourcesGrid" ItemsSource="{Binding GroupSources}"
                                               AllowDrop="True"
                                               PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown"

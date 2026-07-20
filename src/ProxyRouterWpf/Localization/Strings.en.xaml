@@ -64,6 +64,7 @@
     <sys:String x:Key="Str.Proxies.ColFilter">Filter</sys:String>
     <sys:String x:Key="Str.Proxies.TabGroupProxies">Proxies in group</sys:String>
     <sys:String x:Key="Str.Proxies.MenuRemoveFromGroup">Remove from group</sys:String>
+    <sys:String x:Key="Str.Proxies.EmptyGroupDirect">This group has no proxy — traffic matching it goes straight to the internet, without passing through any proxy.</sys:String>
 
     <!-- Proxies tab — ViewModel / code-behind messages -->
     <sys:String x:Key="Str.Proxies.Stopped">Stopped</sys:String>
