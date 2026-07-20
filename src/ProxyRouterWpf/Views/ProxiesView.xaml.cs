@@ -22,6 +22,9 @@ namespace ProxyRouterWpf.Views
         ProxiesViewModel Vm => (ProxiesViewModel)DataContext;
         Window? Owner => Window.GetWindow(this);
 
+        // Only the host list is frozen while running: its listeners are already bound to ports and
+        // each session captured its own source at Start. Routing groups and the unassigned pool are
+        // re-read per request (see ProxySession.MyProxyServerHandler), so they stay editable.
         bool BlockIfRunning()
         {
             if (Vm.IsRunning)
@@ -31,6 +34,10 @@ namespace ProxyRouterWpf.Views
             }
             return false;
         }
+
+        /// <summary>Blocks only when a move would add to or remove from the host list while running.</summary>
+        bool BlockIfTouchesHosts(params Guid?[] buckets)
+            => buckets.Any(b => b == ProxySourceGroups.HostGroupId) && BlockIfRunning();
 
         static List<Guid> SelectedIds(DataGrid grid)
             => grid.SelectedItems.Cast<ProxySourceRow>().Select(r => r.Id).ToList();
@@ -73,7 +80,6 @@ namespace ProxyRouterWpf.Views
         // ---------------- Ungrouped sources ----------------
         void AddUngrouped_Click(object sender, RoutedEventArgs e)
         {
-            if (BlockIfRunning()) return;
             var dlg = new BulkAddSourcesWindow { Owner = Owner };
             if (dlg.ShowDialog() == true)
                 Vm.AddSourcesBulk(null, dlg.ProxyType, dlg.Lines);
@@ -95,17 +101,18 @@ namespace ProxyRouterWpf.Views
 
         void AssignToGroup(DataGrid grid)
         {
-            if (BlockIfRunning()) return;
+            if (grid == HostsGrid && BlockIfRunning()) return;
             var ids = SelectedIds(grid);
             if (ids.Count == 0) { WarnSelect(); return; }
             var dlg = new AssignGroupWindow(Vm.AllGroups(), ids.Count) { Owner = Owner };
-            if (dlg.ShowDialog() == true)
-                Vm.AssignGroup(dlg.GroupId, ids);
+            if (dlg.ShowDialog() != true) return;
+            if (BlockIfTouchesHosts(dlg.GroupId)) return;
+            Vm.AssignGroup(dlg.GroupId, ids);
         }
 
         void DeleteSelected(DataGrid grid)
         {
-            if (BlockIfRunning()) return;
+            if (grid == HostsGrid && BlockIfRunning()) return;
             var ids = SelectedIds(grid);
             if (ids.Count == 0) { WarnSelect(); return; }
             Vm.DeleteSources(ids);
@@ -119,22 +126,21 @@ namespace ProxyRouterWpf.Views
 
         void EditSource(DataGrid grid)
         {
-            if (BlockIfRunning()) return;
+            if (grid == HostsGrid && BlockIfRunning()) return;
             if (grid.SelectedItem is not ProxySourceRow row) { WarnSelect(); return; }
             var dlg = new SourceEditWindow(Vm.AllGroups(), row.Source) { Owner = Owner };
-            if (dlg.ShowDialog() == true)
+            if (dlg.ShowDialog() != true) return;
+            if (BlockIfTouchesHosts(dlg.GroupId)) return; // the dialog can move a row into Hosts
+            Vm.UpdateSource(new UpdateProxySourceVM
             {
-                Vm.UpdateSource(new UpdateProxySourceVM
-                {
-                    Id = row.Id,
-                    GroupId = dlg.GroupId,
-                    ProxyType = dlg.ProxyType,
-                    Address = dlg.Address,
-                    Port = dlg.Port,
-                    UserName = dlg.UserName,
-                    Password = dlg.Password,
-                });
-            }
+                Id = row.Id,
+                GroupId = dlg.GroupId,
+                ProxyType = dlg.ProxyType,
+                Address = dlg.Address,
+                Port = dlg.Port,
+                UserName = dlg.UserName,
+                Password = dlg.Password,
+            });
         }
 
         // ---------------- Groups ----------------
@@ -219,7 +225,6 @@ namespace ProxyRouterWpf.Views
         // ---------------- Group sources ----------------
         void AddGroupSource_Click(object sender, RoutedEventArgs e)
         {
-            if (BlockIfRunning()) return;
             if (Vm.SelectedGroup is not GroupRow g) { MessageBox.Show(Loc.S("Str.Proxies.SelectGroupFirst"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information); return; }
             var dlg = new BulkAddSourcesWindow(g.Name) { Owner = Owner };
             if (dlg.ShowDialog() == true)
@@ -228,19 +233,12 @@ namespace ProxyRouterWpf.Views
 
         void UngroupSource_Click(object sender, RoutedEventArgs e)
         {
-            if (BlockIfRunning()) return;
             var ids = SelectedIds(GroupSourcesGrid);
             if (ids.Count == 0) { WarnSelect(); return; }
             Vm.AssignGroup(null, ids);
         }
 
-        void DeleteGroupSource_Click(object sender, RoutedEventArgs e)
-        {
-            if (BlockIfRunning()) return;
-            var ids = SelectedIds(GroupSourcesGrid);
-            if (ids.Count == 0) { WarnSelect(); return; }
-            Vm.DeleteSources(ids);
-        }
+        void DeleteGroupSource_Click(object sender, RoutedEventArgs e) => DeleteSelected(GroupSourcesGrid);
 
         static void WarnSelect()
             => MessageBox.Show(Loc.S("Str.Proxies.SelectRow"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -389,7 +387,7 @@ namespace ProxyRouterWpf.Views
                 }
                 else { ClearAdorner(); e.Effects = DragDropEffects.None; }
             }
-            else if ((grid == UngroupedGrid || grid == HostsGrid) && IsProxyKind(d))
+            else if (IsMoveTarget(grid) && IsProxyKind(d))
             {
                 // Accepting a proxy from another list moves it into this one.
                 Ensure(grid).SetHighlight(new Rect(0, 0, grid.ActualWidth, grid.ActualHeight));
@@ -440,12 +438,11 @@ namespace ProxyRouterWpf.Views
                 var current = Vm.UngroupedSources.Select(r => r.Id).ToList();
                 var order = BuildReorder(current, d.Ids.ToHashSet(), InsertIndex(UngroupedGrid, e, Vm.UngroupedSources));
                 if (order.SequenceEqual(current)) return;
-                if (BlockIfRunning()) return;
                 Vm.ReorderSources(null, order);
             }
             else if (IsProxyKind(d))
             {
-                if (BlockIfRunning()) return;
+                if (BlockIfTouchesHosts(d.SourceGroupId)) return;
                 Vm.AssignGroup(null, d.Ids);
             }
         }
@@ -453,12 +450,19 @@ namespace ProxyRouterWpf.Views
         void DropOnGroupSources(ProxyDragData d, DragEventArgs e)
         {
             if (Vm.SelectedGroup is not GroupRow sel) return;
-            if (d.Kind != DragKind.GroupSource || d.SourceGroupId != sel.Id) return;
-            var current = Vm.GroupSources.Select(r => r.Id).ToList();
-            var order = BuildReorder(current, d.Ids.ToHashSet(), InsertIndex(GroupSourcesGrid, e, Vm.GroupSources));
-            if (order.SequenceEqual(current)) return;
-            if (BlockIfRunning()) return;
-            Vm.ReorderSources(sel.Id, order);
+
+            if (d.Kind == DragKind.GroupSource && d.SourceGroupId == sel.Id)
+            {
+                var current = Vm.GroupSources.Select(r => r.Id).ToList();
+                var order = BuildReorder(current, d.Ids.ToHashSet(), InsertIndex(GroupSourcesGrid, e, Vm.GroupSources));
+                if (order.SequenceEqual(current)) return;
+                Vm.ReorderSources(sel.Id, order);
+            }
+            else if (IsProxyKind(d))
+            {
+                if (BlockIfTouchesHosts(d.SourceGroupId)) return;
+                Vm.AssignGroup(sel.Id, d.Ids);
+            }
         }
 
         void DropOnGroups(ProxyDragData d, DragEventArgs e)
@@ -474,7 +478,7 @@ namespace ProxyRouterWpf.Views
             {
                 if (RowUnderMouse(GroupsGrid, e)?.Item is not GroupRow g) return;
                 if (g.Id == d.SourceGroupId) return;
-                if (BlockIfRunning()) return;
+                if (BlockIfTouchesHosts(d.SourceGroupId)) return;
                 Vm.AssignGroup(g.Id, d.Ids);
             }
         }
@@ -482,6 +486,12 @@ namespace ProxyRouterWpf.Views
         // ---- drag-drop helpers ----
         static bool IsProxyKind(ProxyDragData d)
             => d.Kind is DragKind.HostSource or DragKind.UngroupedSource or DragKind.GroupSource;
+
+        /// <summary>Grids that accept a proxy dropped anywhere on them, moving it into their bucket.</summary>
+        bool IsMoveTarget(DataGrid grid)
+            => grid == UngroupedGrid
+            || grid == HostsGrid
+            || (grid == GroupSourcesGrid && Vm.SelectedGroup != null);
 
         bool IsReorderTarget(DataGrid grid, ProxyDragData d)
         {
