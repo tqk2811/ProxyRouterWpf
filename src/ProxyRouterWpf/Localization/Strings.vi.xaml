@@ -59,7 +59,7 @@
     <sys:String x:Key="Str.Proxies.ColMatch">Match</sys:String>
     <sys:String x:Key="Str.Proxies.ColContent">Nội dung</sys:String>
     <sys:String x:Key="Str.Proxies.SelectGroup">Chọn một nhóm</sys:String>
-    <sys:String x:Key="Str.Proxies.TabFilters">Filters</sys:String>
+    <sys:String x:Key="Str.Proxies.TabFilters">Các bộ lọc</sys:String>
     <sys:String x:Key="Str.Proxies.MenuAddFilter">Thêm filter…</sys:String>
     <sys:String x:Key="Str.Proxies.ColFilter">Filter</sys:String>
     <sys:String x:Key="Str.Proxies.TabGroupProxies">Proxy trong nhóm</sys:String>
