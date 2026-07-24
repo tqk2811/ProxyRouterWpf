@@ -62,6 +62,13 @@ namespace ProxyRouterWpf.Models
         public string? MatchedGroupName { get; set; }
         public long TotalBytesUpload { get; set; }
         public long TotalBytesDownload { get; set; }
+
+        /// <summary>True when an upstream proxy was picked (show its address + type badge).</summary>
+        public bool HasPickedSource => !string.IsNullOrEmpty(PickedSourceAddress);
+        /// <summary>Resolved with no picked source = traffic went out directly from the VPS.</summary>
+        public bool IsDirectFromVps => Outcome == ProxyTunnelOutcome.Resolved && string.IsNullOrEmpty(PickedSourceAddress);
+        /// <summary>Neither a picked source nor a direct-from-VPS resolve: show the "—" placeholder.</summary>
+        public bool ShowPickedSourceDash => !HasPickedSource && !IsDirectFromVps;
     }
 
     public class ProxyTunnelLogListRequestVM

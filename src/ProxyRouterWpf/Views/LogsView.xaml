@@ -77,11 +77,16 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding ClientIPAddress}"/>
-                                    <TextBlock Text="{Binding ClientPort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
-                                    <TextBlock Text=" → " Foreground="{DynamicResource Brush.Text.Secondary}"/>
-                                    <TextBlock Text="{Binding ServerIPAddress, Converter={StaticResource Dash}}"/>
-                                    <TextBlock Text="{Binding ServerPort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                                    <TextBlock Text="{Binding ClientIPAddress}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ClientPort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center"/>
+                                    <TextBlock Text=" → " Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center"/>
+                                    <Border CornerRadius="4" Padding="5,1" Margin="0,0,4,0" VerticalAlignment="Center"
+                                            Background="{Binding ClientProtocol, Converter={StaticResource ProtocolBrush}}"
+                                            Visibility="{Binding ClientProtocol, Converter={StaticResource NotEmptyToVis}}">
+                                        <TextBlock Text="{Binding ClientProtocol, Converter={StaticResource EnumLoc}}" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding ServerIPAddress, Converter={StaticResource Dash}}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ServerPort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -118,8 +123,19 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding PickedSourceAddress, Converter={StaticResource Dash}}"/>
-                                    <TextBlock Text="{Binding PickedSourcePort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                                    <Border CornerRadius="4" Padding="5,1" Margin="0,0,4,0" VerticalAlignment="Center"
+                                            Background="{Binding PickedSourceProxyType, Converter={StaticResource ProxyTypeBrush}}"
+                                            Visibility="{Binding PickedSourceProxyType, Converter={StaticResource NotEmptyToVis}}">
+                                        <TextBlock Text="{Binding PickedSourceProxyType, Converter={StaticResource EnumLoc}}" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding PickedSourceAddress}" VerticalAlignment="Center"
+                                               Visibility="{Binding HasPickedSource, Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock Text="{Binding PickedSourcePort, StringFormat=':{0}'}" Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center"
+                                               Visibility="{Binding HasPickedSource, Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock Text="{DynamicResource Str.Logs.DirectFromVps}" FontStyle="Italic" Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center"
+                                               Visibility="{Binding IsDirectFromVps, Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock Text="—" Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center"
+                                               Visibility="{Binding ShowPickedSourceDash, Converter={StaticResource BoolToVis}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

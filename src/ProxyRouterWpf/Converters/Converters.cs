@@ -79,6 +79,44 @@ namespace ProxyRouterWpf.Converters
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => Binding.DoNothing;
     }
 
+    /// <summary>ProxyTunnelClientProtocol -> badge brush (mirrors the web ClientProtocolBadge).</summary>
+    public sealed class ClientProtocolBrushConverter : IValueConverter
+    {
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            string key = value is ProxyTunnelClientProtocol p
+                ? p switch
+                {
+                    ProxyTunnelClientProtocol.Socks4 => "Brush.Info",
+                    ProxyTunnelClientProtocol.Socks5 => "Brush.Warning",
+                    _ => "Brush.Text.Secondary",
+                }
+                : "Brush.Text.Secondary";
+            return Application.Current?.TryFindResource(key) as Brush ?? Brushes.Gray;
+        }
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => Binding.DoNothing;
+    }
+
+    /// <summary>ProxyType -> badge brush (mirrors the web ProxyTypeBadge).</summary>
+    public sealed class ProxyTypeBrushConverter : IValueConverter
+    {
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            string key = value is ProxyType t
+                ? t switch
+                {
+                    ProxyType.Https => "Brush.Info",
+                    ProxyType.Socks4 => "Brush.Accent",
+                    ProxyType.Socks5 => "Brush.Warning",
+                    ProxyType.Ssh => "Brush.AccentPurple",
+                    _ => "Brush.Text.Secondary",
+                }
+                : "Brush.Text.Secondary";
+            return Application.Current?.TryFindResource(key) as Brush ?? Brushes.Gray;
+        }
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => Binding.DoNothing;
+    }
+
     public sealed class NullOrEmptyToVisibilityConverter : IValueConverter
     {
         public bool Invert { get; set; }

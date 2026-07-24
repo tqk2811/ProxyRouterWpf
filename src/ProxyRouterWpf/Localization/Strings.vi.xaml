@@ -121,6 +121,7 @@
     <sys:String x:Key="Str.Logs.ColReject">Reject</sys:String>
     <sys:String x:Key="Str.Logs.ColGroup">Group</sys:String>
     <sys:String x:Key="Str.Logs.ColPickedSource">Picked source</sys:String>
+    <sys:String x:Key="Str.Logs.DirectFromVps">Trực tiếp (IP của máy)</sys:String>
     <sys:String x:Key="Str.Logs.View">Xem</sys:String>
     <sys:String x:Key="Str.Logs.Prev">◀ Trước</sys:String>
     <sys:String x:Key="Str.Logs.Next">Sau ▶</sys:String>

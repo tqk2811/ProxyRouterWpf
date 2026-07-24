@@ -21,6 +21,8 @@
             <conv:DashConverter x:Key="Dash"/>
             <conv:LocalTimeConverter x:Key="LocalTime"/>
             <conv:OutcomeBrushConverter x:Key="OutcomeBrush"/>
+            <conv:ClientProtocolBrushConverter x:Key="ProtocolBrush"/>
+            <conv:ProxyTypeBrushConverter x:Key="ProxyTypeBrush"/>
             <conv:InverseBoolConverter x:Key="InverseBool"/>
             <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
             <conv:BoolToVisibilityConverter x:Key="BoolToVisInverse" Invert="True"/>
