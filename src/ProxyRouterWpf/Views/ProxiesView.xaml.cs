@@ -373,7 +373,7 @@ namespace ProxyRouterWpf.Views
 
             if (IsReorderTarget(grid, d))
             {
-                Ensure(grid).SetLine(LineY(grid, RowUnderMouse(grid, e), e));
+                Ensure(grid).SetLine(LineY(grid, ItemsFor(grid), e));
                 e.Effects = DragDropEffects.Move;
             }
             else if (grid == GroupsGrid && IsProxyKind(d))
@@ -512,14 +512,28 @@ namespace ProxyRouterWpf.Views
         static DataGridRow? RowUnderMouse(DataGrid grid, DragEventArgs e)
             => FindAncestor<DataGridRow>(grid.InputHitTest(e.GetPosition(grid)) as DependencyObject);
 
-        // Insert position (0..Count) for a reorder, using the midpoint of the row under the cursor.
+        /// <summary>The bound collection backing a grid — used so reorder geometry matches the visible rows.</summary>
+        System.Collections.IList ItemsFor(DataGrid grid)
+            => grid == HostsGrid ? Vm.HostSources
+             : grid == UngroupedGrid ? Vm.UngroupedSources
+             : grid == GroupSourcesGrid ? (System.Collections.IList)Vm.GroupSources
+             : Vm.Groups;
+
+        // Insert position (0..Count) for a reorder, from the cursor's Y against each row's midpoint.
+        // Purely geometric (not hit-test based) so dropping at the very top/bottom edge resolves
+        // correctly and always agrees with the insertion line drawn by LineY.
         static int InsertIndex(DataGrid grid, DragEventArgs e, System.Collections.IList items)
         {
-            var row = RowUnderMouse(grid, e);
-            if (row == null) return items.Count;
-            int idx = items.IndexOf(row.Item);
-            if (idx < 0) return items.Count;
-            return e.GetPosition(row).Y > row.ActualHeight / 2 ? idx + 1 : idx;
+            double y = e.GetPosition(grid).Y;
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (grid.ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow r)
+                {
+                    double top = r.TranslatePoint(new Point(0, 0), grid).Y;
+                    if (y < top + r.ActualHeight / 2) return i;
+                }
+            }
+            return items.Count;
         }
 
         static List<Guid> BuildReorder(IReadOnlyList<Guid> current, HashSet<Guid> dragged, int insertIndex)
@@ -532,17 +546,17 @@ namespace ProxyRouterWpf.Views
             return result;
         }
 
-        static double LineY(DataGrid grid, DataGridRow? row, DragEventArgs e)
+        // Draws the insertion line at the same boundary InsertIndex would pick, so what the user
+        // sees is exactly where the drop lands.
+        static double LineY(DataGrid grid, System.Collections.IList items, DragEventArgs e)
         {
-            if (row == null)
-            {
-                for (int i = grid.Items.Count - 1; i >= 0; i--)
-                    if (grid.ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow r)
-                        return r.TranslatePoint(new Point(0, r.ActualHeight), grid).Y;
-                return 0;
-            }
-            bool after = e.GetPosition(row).Y > row.ActualHeight / 2;
-            return row.TranslatePoint(new Point(0, after ? row.ActualHeight : 0), grid).Y;
+            int idx = InsertIndex(grid, e, items);
+            if (idx < items.Count && grid.ItemContainerGenerator.ContainerFromIndex(idx) is DataGridRow r)
+                return r.TranslatePoint(new Point(0, 0), grid).Y;
+            for (int i = items.Count - 1; i >= 0; i--)
+                if (grid.ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow last)
+                    return last.TranslatePoint(new Point(0, last.ActualHeight), grid).Y;
+            return 0;
         }
 
         DropAdorner Ensure(DataGrid grid)
