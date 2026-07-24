@@ -55,7 +55,7 @@ namespace ProxyRouterWpf.Configuration
             LocalIp = new LocalIpV4Provider();
             Manager = new ProxiesHostedManager(Sources, Configure, Filters, TrafficCache, EventLog, LoggerFactory);
 
-            BandwidthCache = new NetworkBandwidthCache(120);
+            BandwidthCache = new NetworkBandwidthCache(60);
             BandwidthSampler = new NetworkBandwidthSampler(BandwidthCache, 1000);
         }
 
