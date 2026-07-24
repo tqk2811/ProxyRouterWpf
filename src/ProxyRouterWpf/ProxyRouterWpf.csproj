@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TqkLibrary.Proxy" Version="1.0.35" />
+    <PackageReference Include="TqkLibrary.Proxy" Version="1.0.39" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="System.Management" Version="8.0.0" />
     <!-- Microsoft.Extensions.Logging(.Abstractions) 10.x comes transitively via TqkLibrary.Proxy. -->
