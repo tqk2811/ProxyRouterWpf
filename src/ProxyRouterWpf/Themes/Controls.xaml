@@ -260,6 +260,10 @@
                         <Trigger Property="Text" Value="">
                             <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
                         </Trigger>
+                        <Trigger Property="AcceptsReturn" Value="True">
+                            <Setter TargetName="PART_ContentHost" Property="VerticalAlignment" Value="Top"/>
+                            <Setter TargetName="Watermark" Property="VerticalAlignment" Value="Top"/>
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Control.Hover.BorderBrush}"/>
                         </Trigger>
