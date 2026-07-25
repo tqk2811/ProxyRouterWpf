@@ -36,3 +36,29 @@ liệu vẫn đầy đủ.
 Mảng có kích thước cố định dùng làm hàng đợi vòng: phần tử mới ghi đè lên phần tử cũ nhất khi mảng
 đầy. Ở project này, `NetworkBandwidthCache` dùng ring buffer 60 phần tử để giữ đúng 60 mẫu băng
 thông gần nhất mà không cấp phát thêm bộ nhớ.
+
+## Tunnel
+
+Một kết nối TCP từ client đi qua proxy tới đích, tính từ lúc `ProxyServer` nhận socket cho tới lúc
+socket đóng. Mỗi tunnel có một `tunnelId` (Guid) do thư viện `TqkLibrary.Proxy` sinh ra, và tương
+ứng đúng một dòng log trong tab Logs. Trạng thái của nó (`ProxyTunnelLogState`) được điền dần theo
+từng chặng: nhận client → nhận diện giao thức → xác thực → định tuyến → truyền dữ liệu → đóng.
+
+## Live row (dòng log đang chạy)
+
+Dòng log của một tunnel **chưa đóng**: chưa có `EndAt`, trạng thái hiển thị là "Đang hoạt động", và
+số byte Upload/Download còn tăng. Khác với dòng đã commit (bất biến, nằm trong FIFO), live row chỉ
+là ảnh chụp của `ProxyTunnelLogState` đang sống, được dựng lại mỗi lần truy vấn nên số liệu luôn
+mới. Xem [FIFO](Glossary-vi.md#L54).
+
+## FIFO (First In First Out)
+
+Hàng đợi "vào trước ra trước". `InMemoryTunnelLogStore` giữ log trong RAM theo FIFO có giới hạn: khi
+vượt quá `Capacity` thì các dòng cũ nhất bị loại bỏ trước. Bounded `Channel` nối proxy với bộ tiêu
+thụ log cũng là FIFO, nhưng đầy thì *bỏ luôn bản ghi mới* (`DropWrite`) để không chặn luồng proxy.
+
+## INotifyPropertyChanged
+
+Giao diện chuẩn của .NET để một object báo cho WPF biết thuộc tính vừa đổi giá trị, nhờ đó binding
+tự cập nhật UI mà không phải dựng lại danh sách. `ObservableObject` (CommunityToolkit.Mvvm) là bản
+cài sẵn; thuộc tính khai báo bằng `[ObservableProperty]` sẽ tự sinh code raise sự kiện này.
