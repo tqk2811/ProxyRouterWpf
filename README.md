@@ -1,21 +1,29 @@
 # ProxyRouter WPF
 
+**English** · [Tiếng Việt](README-vi.md)
+
 A Windows desktop (WPF) port of [ProxyRouter](https://github.com/tqk2811/ProxyRouter) — a local
 multi-protocol proxy server that listens on local ports and forwards traffic to upstream proxies,
 with host-based routing rules. This desktop edition drops the ASP.NET web stack and the SQL database.
 
 ## What it does
 
-- Runs local **HTTP / SOCKS4 / SOCKS5** listeners (protocol auto-detected per connection) on
-  `StartPort + i`, one listener per ungrouped upstream proxy source.
+- Runs local **HTTP / SOCKS4 / SOCKS5** listeners (protocol auto-detected per connection). One
+  listener is opened per **Host** proxy source, on `StartPort + i`, bound to a configurable listen
+  address (`0.0.0.0` by default, or any LAN address of the machine).
+- Two proxy buckets: **Hosts** (each one becomes a listening port) and **Ungrouped** (a pool that
+  listens on nothing); a source may instead belong to a **routing group**.
 - **Group + Filter routing**: override the upstream per request by target host — `Wildcard`,
   `Equals`, `StartsWith`, `EndsWith`, `Contains`, `CIDR`, `Regex`, or cumulative `TotalBytes`
   thresholds, combined with `And`/`Or` match modes and `NOT` negation.
 - **Tunnel logs** kept in a bounded in-memory FIFO (oldest dropped first) with filtering, sorting,
-  paging and a read-only detail view.
+  paging and a read-only detail view. Rows appear as soon as a connection opens (outcome
+  `Active`, live byte counters) and are finalised when the tunnel closes.
 - **Bandwidth** monitor: whole-machine realtime chart (WMI network counters).
-- **Dark / Light / System** theme (live switch), styled after
-  [AndroidSyncControl](https://github.com/tqk2811/AndroidSyncControl).
+- **Dark / Light / System** theme and **English / Vietnamese** UI language, both switched live from
+  the title bar. Styling follows [AndroidSyncControl](https://github.com/tqk2811/AndroidSyncControl).
+- Drag & drop across the proxy grids: reorder priorities, move sources between Hosts, Ungrouped and
+  groups.
 
 ## Screenshots
 
@@ -85,10 +93,11 @@ src/ProxyRouterWpf/
   Proxy/            proxy engine (manager, session, handlers) over TqkLibrary.Proxy
     EventLogs/      RAM tunnel-log pipeline (FIFO store, channel consumer, traffic cache)
   Bandwidth/        WMI sampler + ring-buffer cache
+  Localization/     EN/VI string dictionaries + LocalizationManager
   Themes/           Colors.Dark/Light + Controls.xaml + ThemeManager
   Converters/       value converters
   ViewModels/       MVVM (CommunityToolkit.Mvvm)
-  Views/            tabs (Proxies, Logs, Bandwidth, Settings) + dialogs
+  Views/            tabs (Proxies, Logs, Bandwidth) + dialogs + custom controls
 ```
 
 ## Credits
