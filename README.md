@@ -53,6 +53,27 @@ dotnet build ProxyRouterWpf.slnx -c Release
 dotnet run --project src/ProxyRouterWpf/ProxyRouterWpf.csproj
 ```
 
+## Versioning & releases
+
+Versions come from [GitVersion](GitVersion.yml): a tag `vM.N.0` opens a minor line and every
+build on it is `M.N.<commits-since-tag>` (`1.0.0`, `1.0.1`, …). Debug builds skip GitVersion and
+report `0.0.0-debug`. Bump a line by tagging `vM.<N+1>.0` and pushing the tag.
+
+Releases are **master-only** and opt-in: [`.github/workflows/release.yml`](.github/workflows/release.yml)
+runs only when the pushed head commit contains the marker `[release]` (or on a manual dispatch
+from master). It publishes a framework-dependent `win-x64` build, zips it to
+`ProxyRouterWpf-M.N.<n>-win-x64.zip`, and attaches it to the GitHub Release named after the tag
+`vM.N.0`, whose notes list every `[release]` build since that tag.
+
+```powershell
+.\Changelog.ps1                        # regenerate CHANGELOG.md (git-cliff, Conventional Commits)
+.\Release.ps1 -Message "msg" -Push     # changelog + commit with [release] + push (triggers CI)
+```
+
+Commits must follow [Conventional Commits](https://www.conventionalcommits.org) — the changelog
+and the release notes are generated from them. To rebuild only the notes of an existing Release,
+push a commit marked `[release_notes_only]` or dispatch the workflow with that input.
+
 ## Project layout
 
 ```
