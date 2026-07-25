@@ -13,11 +13,13 @@ namespace ProxyRouterWpf.Proxy.EventLogs
     public class ProxyEventLogService : IProxyEventLogService
     {
         readonly ConcurrentDictionary<Guid, ProxyTunnelLogState> _states = new();
+        readonly InMemoryTunnelLogStore _store;
         readonly Channel<ProxyTunnelLogState> _channel;
         long _droppedCount;
 
-        public ProxyEventLogService(int capacity = 100_000)
+        public ProxyEventLogService(InMemoryTunnelLogStore store, int capacity = 100_000)
         {
+            _store = store;
             _channel = Channel.CreateBounded<ProxyTunnelLogState>(new BoundedChannelOptions(Math.Max(1000, capacity))
             {
                 FullMode = BoundedChannelFullMode.DropWrite,
@@ -42,6 +44,8 @@ namespace ProxyRouterWpf.Proxy.EventLogs
                 LastTouchedAt = now,
             };
             _states[tunnelId] = state;
+            // Publish it right away: the Logs tab shows the connection as Active while it runs.
+            _store.AddLive(state);
         }
 
         public ProxyTunnelLogState? GetState(Guid tunnelId)
@@ -63,11 +67,20 @@ namespace ProxyRouterWpf.Proxy.EventLogs
             state.RejectReason = rejectReason;
             state.ErrorMessage = errorMessage;
             state.EndAt = DateTime.UtcNow;
+            // The live row stays until the consumer inserts the committed one (Add swaps them
+            // atomically) — except when the channel is full and the log is dropped altogether.
             if (!_channel.Writer.TryWrite(state))
+            {
                 Interlocked.Increment(ref _droppedCount);
+                _store.RemoveLive(tunnelId);
+            }
         }
 
-        public void Discard(Guid tunnelId) => _states.TryRemove(tunnelId, out _);
+        public void Discard(Guid tunnelId)
+        {
+            _states.TryRemove(tunnelId, out _);
+            _store.RemoveLive(tunnelId);
+        }
 
         public long ConsumeDroppedCount() => Interlocked.Exchange(ref _droppedCount, 0);
 
@@ -78,7 +91,10 @@ namespace ProxyRouterWpf.Proxy.EventLogs
             foreach (var kvp in _states)
             {
                 if (kvp.Value.LastTouchedAt < threshold && _states.TryRemove(kvp.Key, out _))
+                {
+                    _store.RemoveLive(kvp.Key);
                     removed++;
+                }
             }
             return removed;
         }

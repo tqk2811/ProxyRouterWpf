@@ -31,7 +31,9 @@ namespace ProxyRouterWpf.ViewModels
             ProxyTypeOptions = new();
             BuildFilterOptions();
 
-            _autoTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+            // 1s: live rows (open tunnels) keep moving their byte counters, so refresh often enough
+            // for them to read as "live".
+            _autoTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _autoTimer.Tick += (_, _) => Reload();
 
             Reload();
@@ -116,13 +118,32 @@ namespace ProxyRouterWpf.ViewModels
                 SortDesc = _sortDesc,
             };
             var res = _svc.TunnelLogs.List(req);
-            Items.Clear();
-            foreach (var it in res.Items) Items.Add(it);
+            MergeItems(res.Items);
             IsEmpty = res.TotalCount == 0;
             TotalCount = res.TotalCount;
             TotalPages = Math.Max(1, (int)Math.Ceiling(res.TotalCount / (double)res.PageSize));
             if (Page > TotalPages) { Page = TotalPages; }
             PageInfo = Loc.F("Str.Logs.PageInfo", Page, TotalPages, TotalCount, _svc.LogStore.Capacity);
+        }
+
+        /// <summary>
+        /// Refreshes <see cref="Items"/> without clearing it: a row whose Id still matches is updated
+        /// in place (keeps the grid selection/scroll and lets the live byte counters tick smoothly),
+        /// the rest are replaced/appended and the tail trimmed.
+        /// </summary>
+        void MergeItems(List<ProxyTunnelLogListItemVM> incoming)
+        {
+            for (int i = 0; i < incoming.Count; i++)
+            {
+                if (i >= Items.Count)
+                    Items.Add(incoming[i]);
+                else if (Items[i].Id == incoming[i].Id)
+                    Items[i].CopyFrom(incoming[i]);
+                else
+                    Items[i] = incoming[i];
+            }
+            while (Items.Count > incoming.Count)
+                Items.RemoveAt(Items.Count - 1);
         }
 
         /// <summary>

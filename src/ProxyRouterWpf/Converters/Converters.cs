@@ -42,11 +42,12 @@ namespace ProxyRouterWpf.Converters
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => Binding.DoNothing;
     }
 
-    /// <summary>UTC DateTime -> local "yyyy-MM-dd HH:mm:ss".</summary>
+    /// <summary>UTC DateTime -> local "yyyy-MM-dd HH:mm:ss"; null (e.g. EndAt of a live tunnel) -> "—".</summary>
     public sealed class LocalTimeConverter : IValueConverter
     {
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
+            if (value is null) return "—";
             if (value is DateTime dt)
             {
                 var local = dt.Kind == DateTimeKind.Utc ? dt.ToLocalTime() : DateTime.SpecifyKind(dt, DateTimeKind.Utc).ToLocalTime();
@@ -66,6 +67,7 @@ namespace ProxyRouterWpf.Converters
             string key = value is ProxyTunnelOutcome o
                 ? o switch
                 {
+                    ProxyTunnelOutcome.Active => "Brush.Info",
                     ProxyTunnelOutcome.Resolved => "Brush.Success",
                     ProxyTunnelOutcome.ClientRejected => "Brush.Danger",
                     ProxyTunnelOutcome.AuthRejected => "Brush.Danger",

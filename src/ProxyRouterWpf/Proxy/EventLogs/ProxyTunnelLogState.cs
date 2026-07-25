@@ -9,6 +9,12 @@ namespace ProxyRouterWpf.Proxy.EventLogs
     {
         public Guid TunnelId { get; init; }
 
+        /// <summary>
+        /// Log row id reserved by <see cref="InMemoryTunnelLogStore.AddLive"/> the moment the
+        /// connection arrives, so the live row and the committed row are the same row for the UI.
+        /// </summary>
+        public long LogId { get; set; }
+
         public required string ClientIPAddress { get; init; }
         public required int ClientPort { get; init; }
         public string? ServerIPAddress { get; init; }
@@ -17,8 +23,9 @@ namespace ProxyRouterWpf.Proxy.EventLogs
         public DateTime StartedAt { get; init; }
         public DateTime LastTouchedAt { get; set; }
 
-        public DateTime EndAt { get; set; }
-        public ProxyTunnelOutcome Outcome { get; set; }
+        /// <summary>Null while the tunnel is still open (Outcome stays <see cref="ProxyTunnelOutcome.Active"/>).</summary>
+        public DateTime? EndAt { get; set; }
+        public ProxyTunnelOutcome Outcome { get; set; } = ProxyTunnelOutcome.Active;
         public ProxyTunnelRejectReason? RejectReason { get; set; }
         public string? ErrorMessage { get; set; }
 
@@ -47,8 +54,19 @@ namespace ProxyRouterWpf.Proxy.EventLogs
         public long TotalBytesUpload => Interlocked.Read(ref _totalBytesUpload);
         public long TotalBytesDownload => Interlocked.Read(ref _totalBytesDownload);
 
-        public void AddBytesUpload(long bytes) => Interlocked.Add(ref _totalBytesUpload, bytes);
-        public void AddBytesDownload(long bytes) => Interlocked.Add(ref _totalBytesDownload, bytes);
+        // Traffic also counts as activity: without this a tunnel busy for longer than the abandoned
+        // TTL (5 min) would be evicted by CleanupAbandoned and its log lost.
+        public void AddBytesUpload(long bytes)
+        {
+            Interlocked.Add(ref _totalBytesUpload, bytes);
+            LastTouchedAt = DateTime.UtcNow;
+        }
+
+        public void AddBytesDownload(long bytes)
+        {
+            Interlocked.Add(ref _totalBytesDownload, bytes);
+            LastTouchedAt = DateTime.UtcNow;
+        }
 
         // Expected outcome consumed by BytesCountingStream.Dispose. Default Resolved; overridden by
         // hooks when a failure is detected before the tunnel closes.

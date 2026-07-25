@@ -19,10 +19,11 @@ namespace ProxyRouterWpf.Views
 
         void Build(ProxyTunnelLogVM x)
         {
-            var dur = x.EndAt - x.StartAt;
+            // Still-open tunnel: no EndAt yet, so the duration counts up to now.
+            var dur = (x.EndAt ?? DateTime.UtcNow) - x.StartAt;
             AddRow(TunnelFields, "TunnelId", x.TunnelId.ToString());
             AddRow(TunnelFields, "Start", Local(x.StartAt));
-            AddRow(TunnelFields, "End", Local(x.EndAt));
+            AddRow(TunnelFields, "End", x.EndAt is null ? "—" : Local(x.EndAt.Value));
             AddRow(TunnelFields, "Duration", dur.ToString(@"hh\:mm\:ss\.fff"));
             AddRow(TunnelFields, "Outcome", LocalizationManager.EnumText(x.Outcome));
             AddRow(TunnelFields, "Client", $"{x.ClientIPAddress}:{x.ClientPort}");

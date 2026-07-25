@@ -59,8 +59,22 @@
             <DataGrid x:Name="LogGrid" ItemsSource="{Binding Items}" CanUserSortColumns="True"
                       Sorting="LogGrid_Sorting" MouseDoubleClick="LogGrid_DoubleClick" BorderThickness="0">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="EndAt" SortMemberPath="EndAt" Width="150"
-                                        Binding="{Binding EndAt, Converter={StaticResource LocalTime}}"/>
+                    <!-- End time; a still-open tunnel has none yet ("—"), the tooltip always shows the start time. -->
+                    <DataGridTemplateColumn SortMemberPath="EndAt" Width="150">
+                        <DataGridTemplateColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColEndAt}"/></DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding EndAt, Converter={StaticResource LocalTime}}" VerticalAlignment="Center">
+                                    <TextBlock.ToolTip>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{DynamicResource Str.Logs.ColStartAt}" Margin="0,0,6,0"/>
+                                            <TextBlock Text="{Binding StartAt, Converter={StaticResource LocalTime}}"/>
+                                        </StackPanel>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn SortMemberPath="Outcome" Width="110">
                         <DataGridTemplateColumn.Header><TextBlock Text="{DynamicResource Str.Logs.ColOutcome}"/></DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>

@@ -114,6 +114,8 @@
     <sys:String x:Key="Str.Logs.Capacity">Số log giữ trong RAM (FIFO):</sys:String>
     <sys:String x:Key="Str.Logs.CapacityHint">Khi vượt quá, log cũ nhất bị loại bỏ trước (100..200000).</sys:String>
     <sys:String x:Key="Str.Logs.Empty">Chưa có log tunnel. Bật Proxy ở tab Proxies và tạo lưu lượng qua proxy để xem log ở đây.</sys:String>
+    <sys:String x:Key="Str.Logs.ColStartAt">Bắt đầu</sys:String>
+    <sys:String x:Key="Str.Logs.ColEndAt">Kết thúc</sys:String>
     <sys:String x:Key="Str.Logs.ColOutcome">Outcome</sys:String>
     <sys:String x:Key="Str.Logs.ColClientServer">Client → Server</sys:String>
     <sys:String x:Key="Str.Logs.ColUpload">Upload</sys:String>
@@ -186,6 +188,7 @@
     <sys:String x:Key="Str.LogDetail.Direct">Direct (không upstream)</sys:String>
 
     <!-- ===== Enum display text ===== -->
+    <sys:String x:Key="Enum.ProxyTunnelOutcome.Active">Đang hoạt động</sys:String>
     <sys:String x:Key="Enum.ProxyTunnelOutcome.ClientRejected">Từ chối client</sys:String>
     <sys:String x:Key="Enum.ProxyTunnelOutcome.RequestFailed">Request lỗi</sys:String>
     <sys:String x:Key="Enum.ProxyTunnelOutcome.AuthRejected">Từ chối xác thực</sys:String>

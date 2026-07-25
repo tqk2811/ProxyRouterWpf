@@ -92,10 +92,11 @@ namespace ProxyRouterWpf.Proxy.EventLogs
 
             if (request.PickedSourceProxyType.HasValue)
                 q = q.Where(x => x.PickedSourceProxyType == request.PickedSourceProxyType.Value);
+            // A live tunnel has no EndAt yet, so its StartAt stands in (see EffectiveAt).
             if (request.FromUtc.HasValue)
-                q = q.Where(x => x.EndAt >= request.FromUtc.Value);
+                q = q.Where(x => x.EffectiveAt >= request.FromUtc.Value);
             if (request.ToUtc.HasValue)
-                q = q.Where(x => x.EndAt <= request.ToUtc.Value);
+                q = q.Where(x => x.EffectiveAt <= request.ToUtc.Value);
 
             var list = q.ToList();
             int total = list.Count;
@@ -131,10 +132,24 @@ namespace ProxyRouterWpf.Proxy.EventLogs
                 ProxyTunnelLogSortBy.PickedSourceAddress => desc ? list.OrderByDescending(x => x.PickedSourceAddress).ThenByDescending(x => x.PickedSourcePort) : list.OrderBy(x => x.PickedSourceAddress).ThenBy(x => x.PickedSourcePort),
                 ProxyTunnelLogSortBy.ClientAddress => desc ? list.OrderByDescending(x => x.ClientIPAddress).ThenByDescending(x => x.ClientPort) : list.OrderBy(x => x.ClientIPAddress).ThenBy(x => x.ClientPort),
                 ProxyTunnelLogSortBy.ServerPort => desc ? list.OrderByDescending(x => x.ServerPort) : list.OrderBy(x => x.ServerPort),
-                _ => desc ? list.OrderByDescending(x => x.EndAt) : list.OrderBy(x => x.EndAt),
+                _ => SortByEndAt(list, desc),
             };
             return desc ? ordered.ThenByDescending(x => x.Id) : ordered.ThenBy(x => x.Id);
         }
+
+        /// <summary>
+        /// Two-level sort for the EndAt column: EndAt first, StartAt as the secondary key. Still-open
+        /// tunnels have no EndAt, so they are grouped together — on top when descending (newest
+        /// first), at the bottom when ascending — and ordered among themselves by StartAt.
+        /// </summary>
+        static IOrderedEnumerable<ProxyTunnelLogVM> SortByEndAt(List<ProxyTunnelLogVM> list, bool desc)
+            => desc
+                ? list.OrderBy(x => x.EndAt.HasValue ? 1 : 0)
+                      .ThenByDescending(x => x.EndAt)
+                      .ThenByDescending(x => x.StartAt)
+                : list.OrderBy(x => x.EndAt.HasValue ? 0 : 1)
+                      .ThenBy(x => x.EndAt)
+                      .ThenBy(x => x.StartAt);
 
         static (string addr, int? port) ParseAddressPort(string input)
         {

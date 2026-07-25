@@ -41,7 +41,7 @@ namespace ProxyRouterWpf.Proxy.EventLogs
                 {
                     while (reader.TryRead(out var state))
                     {
-                        var vm = Map(state);
+                        var vm = TunnelLogMapper.Map(state);
                         _store.Add(vm);
                         if (!string.IsNullOrEmpty(vm.TargetHost))
                             _trafficCache.TryUpdateMax(vm.TargetHost!, vm.TotalBytesUpload, vm.TotalBytesDownload, vm.TotalBytesUpload + vm.TotalBytesDownload);
@@ -63,38 +63,6 @@ namespace ProxyRouterWpf.Proxy.EventLogs
             }
             catch (OperationCanceledException) { /* shutting down */ }
         }
-
-        static ProxyTunnelLogVM Map(ProxyTunnelLogState s) => new()
-        {
-            TunnelId = s.TunnelId,
-            StartAt = s.StartedAt,
-            EndAt = s.EndAt,
-            Outcome = s.Outcome,
-            ClientIPAddress = s.ClientIPAddress,
-            ClientPort = s.ClientPort,
-            ServerIPAddress = s.ServerIPAddress,
-            ServerPort = s.ServerPort,
-            ClientProtocol = s.ClientProtocol,
-            RejectReason = s.RejectReason,
-            ErrorMessage = s.ErrorMessage,
-            TargetHost = s.TargetHost,
-            TargetPort = s.TargetPort,
-            AuthMethod = s.AuthMethod,
-            AuthUserName = s.AuthUserName,
-            AuthPassword = s.AuthPassword,
-            RoutingDecision = s.RoutingDecision,
-            MatchedFilterType = s.MatchedFilterType,
-            MatchedFilterPattern = s.MatchedFilterPattern,
-            MatchedGroupId = s.MatchedGroupId,
-            MatchedGroupName = s.MatchedGroupName,
-            PickedSourceId = s.PickedSourceId,
-            PickedSourceAddress = s.PickedSourceAddress,
-            PickedSourcePort = s.PickedSourcePort,
-            PickedSourceProxyType = s.PickedSourceProxyType,
-            PickedSourceUserName = s.PickedSourceUserName,
-            TotalBytesUpload = s.TotalBytesUpload,
-            TotalBytesDownload = s.TotalBytesDownload,
-        };
 
         public async ValueTask DisposeAsync()
         {

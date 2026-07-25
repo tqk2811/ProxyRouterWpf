@@ -46,8 +46,8 @@ namespace ProxyRouterWpf.Configuration
             Groups = new ProxySourceGroupService(Config);
             Filters = new ProxySourceGroupFilterService(Config);
 
-            EventLog = new ProxyEventLogService();
             LogStore = new InMemoryTunnelLogStore(Config.Config.Settings.LogCapacity);
+            EventLog = new ProxyEventLogService(LogStore);
             TrafficCache = new ProxyHostTrafficCache(LogStore);
             TunnelLogs = new ProxyTunnelLogService(LogStore);
             LogConsumer = new TunnelLogChannelConsumer(EventLog, LogStore, TrafficCache);
