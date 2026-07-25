@@ -17,11 +17,15 @@ namespace ProxyRouterWpf.Views
         const int XTickCount = 4;
 
         BandwidthViewModel? _vm;
+        bool _attached;
 
         public BandwidthView()
         {
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
+            // The tab strip tears the view out of the visual tree on every tab switch, so the
+            // subscription has to follow Loaded/Unloaded — DataContext itself never changes.
+            Loaded += (_, _) => { Attach(); Draw(); };
             Unloaded += (_, _) => Detach();
         }
 
@@ -29,14 +33,21 @@ namespace ProxyRouterWpf.Views
         {
             Detach();
             _vm = DataContext as BandwidthViewModel;
-            if (_vm != null)
-                _vm.PropertyChanged += OnVmPropertyChanged;
+            if (IsLoaded) Attach();
+        }
+
+        void Attach()
+        {
+            if (_vm == null || _attached) return;
+            _vm.PropertyChanged += OnVmPropertyChanged;
+            _attached = true;
         }
 
         void Detach()
         {
-            if (_vm != null)
-                _vm.PropertyChanged -= OnVmPropertyChanged;
+            if (_vm == null || !_attached) return;
+            _vm.PropertyChanged -= OnVmPropertyChanged;
+            _attached = false;
         }
 
         void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
