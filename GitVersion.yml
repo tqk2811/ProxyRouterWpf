@@ -1,0 +1,24 @@
+# GitVersion config -- version = Major.Minor.<commits-since-tag>.
+#
+# 'increment: None' keeps Major/Minor exactly as written in the tag 'vM.N.0'; the patch number
+# is CommitsSinceVersionSource (see ProjectBuildProperties.targets). Open a new line by tagging
+# 'vM.<N+1>.0' and pushing that tag.
+#
+# Tags MUST be full SemVer (v1.0.0). A short tag like 'v1.0' is silently ignored and GitVersion
+# falls back to 0.0.1 with the commit count from the root of the repo.
+deployment-mode: ManualDeployment
+tag-prefix: '[vV]?'
+branches:
+  master:
+    regex: ^master$
+    increment: None
+    label: ''
+  main:
+    regex: ^main$
+    increment: None
+    label: ''
+  version-branch:
+    regex: .*
+    increment: None
+    source-branches: []
+    label: ''

@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Shared version (GitVersion) + Release hardening settings. -->
+  <Import Project="..\..\ProjectBuildProperties.targets" />
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>

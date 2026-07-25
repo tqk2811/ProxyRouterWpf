@@ -25,6 +25,10 @@ bld/
 .idea/
 *.DotSettings.user
 
+## Release pipeline output (publish folder + zip, generated notes)
+artifacts/
+RELEASE_NOTES.md
+
 ## Runtime user data (config lives next to the exe; never commit it)
 proxyrouter.config.json
 *.config.json

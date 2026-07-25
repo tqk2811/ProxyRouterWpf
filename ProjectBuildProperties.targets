@@ -1,0 +1,48 @@
+<Project>
+	<!-- Shared build/version settings, imported by every project in this repo.
+
+	     Version scheme: GitVersion + tag 'vM.N.0' => Version = Major.Minor.<commits-since-tag>.
+	     Debug builds skip GitVersion entirely (no git query per build) and use 0.0.0-debug. -->
+
+	<PropertyGroup>
+		<!-- A project can opt out by setting EnableGitVersion=false before this import. -->
+		<EnableGitVersion Condition="'$(EnableGitVersion)' == ''">true</EnableGitVersion>
+		<!-- Never bake the build machine path into the pdb / stack traces. -->
+		<PathMap>$(MSBuildProjectDirectory)=$(MSBuildProjectName)</PathMap>
+	</PropertyGroup>
+
+	<!-- Release is the build we ship: deterministic, no machine path / repo URL / commit sha. -->
+	<PropertyGroup Condition="$(Configuration.Contains('Release'))">
+		<Deterministic>true</Deterministic>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<DebugType>portable</DebugType>
+		<EnableSourceLink>false</EnableSourceLink>
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="!$(Configuration.Contains('Release')) and '$(EnableGitVersion)' == 'true'">
+		<DisableGitVersionTask>true</DisableGitVersionTask>
+		<WriteVersionInfoToBuildLog>false</WriteVersionInfoToBuildLog>
+		<GenerateGitVersionInformation>false</GenerateGitVersionInformation>
+		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+		<GenerateGitVersionFiles>false</GenerateGitVersionFiles>
+		<Version>0.0.0-debug</Version>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(EnableGitVersion)' == 'true'">
+		<PackageReference Include="GitVersion.MsBuild" Version="6.7.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<Target Name="SetVersionFromGitVersion" AfterTargets="GetVersion" Condition="'$(EnableGitVersion)' == 'true' and '$(DisableGitVersionTask)' != 'true'">
+		<PropertyGroup>
+			<Version>$(GitVersion_Major).$(GitVersion_Minor).$(GitVersion_CommitsSinceVersionSource)</Version>
+			<!-- AssemblyVersion stays per minor line so patch builds stay binary compatible. -->
+			<AssemblyVersion>$(GitVersion_Major).$(GitVersion_Minor).0.0</AssemblyVersion>
+			<FileVersion>$(GitVersion_Major).$(GitVersion_Minor).$(GitVersion_CommitsSinceVersionSource).0</FileVersion>
+			<InformationalVersion>$(Version)</InformationalVersion>
+		</PropertyGroup>
+	</Target>
+</Project>
