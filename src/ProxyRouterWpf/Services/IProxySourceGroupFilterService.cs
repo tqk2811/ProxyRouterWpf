@@ -11,5 +11,6 @@ namespace ProxyRouterWpf.Services
         void Update(UpdateProxySourceGroupFilterVM model);
         void UpdateIsNot(UpdateProxySourceGroupFilterIsNotVM model);
         void Delete(Guid id);
+        void BulkDelete(BulkDeleteProxySourceGroupFilterVM model);
     }
 }

@@ -181,6 +181,17 @@ namespace ProxyRouterWpf.Services
             }
         }
 
+        public void BulkDelete(BulkDeleteProxySourceGroupFilterVM model)
+        {
+            if (model.Ids.Count == 0) return;
+            lock (_store.SyncRoot)
+            {
+                var ids = model.Ids.ToHashSet();
+                if (Filters.RemoveAll(x => ids.Contains(x.Id)) > 0)
+                    _store.Save();
+            }
+        }
+
         // TotalBytes: Filter is a non-negative byte threshold (long), TrafficDirection required.
         // Others: TrafficDirection forced null, Filter trimmed only.
         static (string Filter, ProxyTrafficDirection? Direction) NormalizeFilter(

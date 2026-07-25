@@ -48,6 +48,12 @@ namespace ProxyRouterWpf.Models
         public Guid Id { get; set; }
     }
 
+    public class BulkDeleteProxySourceGroupFilterVM
+    {
+        [Required]
+        public List<Guid> Ids { get; set; } = new();
+    }
+
     public class BulkCreateProxySourceGroupFilterVM
     {
         public Guid GroupId { get; set; }

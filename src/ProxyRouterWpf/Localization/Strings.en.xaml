@@ -84,6 +84,7 @@
     <sys:String x:Key="Str.Proxies.AddProxyCaption">Add proxy</sys:String>
     <sys:String x:Key="Str.Proxies.AddFilterCaption">Add filter</sys:String>
     <sys:String x:Key="Str.Proxies.DeleteProxiesConfirm">Delete {0} proxies?</sys:String>
+    <sys:String x:Key="Str.Proxies.DeleteFiltersConfirm">Delete {0} filters?</sys:String>
     <sys:String x:Key="Str.Proxies.DeleteGroupConfirm">Delete this group? (Its proxies and filters are also deleted)</sys:String>
     <sys:String x:Key="Str.Proxies.StopBeforeEdit">Stop the proxy before editing the source proxy list.</sys:String>
     <sys:String x:Key="Str.Proxies.SelectGroupFirst">Select a group first.</sys:String>

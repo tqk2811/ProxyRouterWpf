@@ -259,7 +259,7 @@
                         <TabControl>
                             <TabItem Header="{DynamicResource Str.Proxies.TabFilters}">
                                 <DockPanel Margin="0,8,0,0">
-                                    <DataGrid x:Name="FiltersGrid" ItemsSource="{Binding Filters}" SelectionMode="Single">
+                                    <DataGrid x:Name="FiltersGrid" ItemsSource="{Binding Filters}">
                                         <DataGrid.ContextMenu>
                                             <ContextMenu>
                                                 <MenuItem Header="{DynamicResource Str.Proxies.MenuAddFilter}" Click="AddFilter_Click"/>

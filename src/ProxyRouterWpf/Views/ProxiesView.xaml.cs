@@ -212,8 +212,9 @@ namespace ProxyRouterWpf.Views
 
         void DeleteFilter_Click(object sender, RoutedEventArgs e)
         {
-            if (FiltersGrid.SelectedItem is FilterRow row) Vm.DeleteFilter(row.Id);
-            else WarnSelect();
+            var ids = FiltersGrid.SelectedItems.Cast<FilterRow>().Select(r => r.Id).ToList();
+            if (ids.Count == 0) { WarnSelect(); return; }
+            Vm.DeleteFilters(ids);
         }
 
         void FilterIsNot_Click(object sender, RoutedEventArgs e)

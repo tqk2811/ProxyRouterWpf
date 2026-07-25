@@ -84,6 +84,7 @@
     <sys:String x:Key="Str.Proxies.AddProxyCaption">Thêm proxy</sys:String>
     <sys:String x:Key="Str.Proxies.AddFilterCaption">Thêm filter</sys:String>
     <sys:String x:Key="Str.Proxies.DeleteProxiesConfirm">Xoá {0} proxy?</sys:String>
+    <sys:String x:Key="Str.Proxies.DeleteFiltersConfirm">Xoá {0} bộ lọc?</sys:String>
     <sys:String x:Key="Str.Proxies.DeleteGroupConfirm">Xoá group này? (Proxy và filter thuộc group cũng bị xoá)</sys:String>
     <sys:String x:Key="Str.Proxies.StopBeforeEdit">Dừng proxy trước khi chỉnh sửa danh sách proxy nguồn.</sys:String>
     <sys:String x:Key="Str.Proxies.SelectGroupFirst">Chọn một nhóm trước.</sys:String>

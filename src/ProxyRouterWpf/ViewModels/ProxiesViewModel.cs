@@ -396,9 +396,11 @@ namespace ProxyRouterWpf.ViewModels
             catch (Exception ex) { ShowError(ex); }
         }
 
-        public void DeleteFilter(Guid id)
+        public void DeleteFilters(IReadOnlyList<Guid> ids)
         {
-            try { _svc.Filters.Delete(id); ReloadGroups(); }
+            if (ids.Count == 0) return;
+            if (MessageBox.Show(Loc.F("Str.Proxies.DeleteFiltersConfirm", ids.Count), Loc.S("Str.Common.Confirm"), MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+            try { _svc.Filters.BulkDelete(new BulkDeleteProxySourceGroupFilterVM { Ids = ids.ToList() }); ReloadGroups(); }
             catch (Exception ex) { ShowError(ex); }
         }
 
