@@ -1,0 +1,54 @@
+# git-cliff config used ONLY for the GitHub Release notes (see .github/workflows/release.yml).
+# Different from cliff.toml (local CHANGELOG.md): no header/footer. Used with the range
+# '<tag>..HEAD' (every commit since tag vM.N.0, merges from other branches included).
+#
+# The template ONLY emits '__SHA_<sha>__ <formatted line>' per commit (no numbering, no ordering).
+# release.yml uses the sha to rebuild the structure around the [release] builds:
+# - build point R = a first-parent commit carrying the '[release]' marker (+ the HEAD of the
+#   current run); header '- M.N.<zzz>' where zzz = rev-list --count tag..R (= the built version,
+#   because GitVersion counts EVERY commit)
+# - child item '  + <line>' = every new commit in (previous R..R], merges included
+
+[changelog]
+header = ""
+# Only list the change types a user cares about (filtered here, at display time).
+# To add/remove a type, edit the `commit.group in [...]` list below.
+# Each item links to its commit: the link sits on the scope, or on the (type) when there is none.
+# '__REPO__' is replaced by release.yml with $GITHUB_SERVER_URL/$GITHUB_REPOSITORY.
+body = """
+{% for commit in commits %}\
+{% if commit.group in ["feat", "fix", "perf", "revert", "refactor", "chore"] %}\
+__SHA_{{ commit.id }}__ {% if commit.scope %}({{ commit.group }}) [**{{ commit.scope }}**](__REPO__/commit/{{ commit.id }}){% else %}[({{ commit.group }})](__REPO__/commit/{{ commit.id }}){% endif %} {{ commit.message | upper_first }}{% if commit.breaking %} [**breaking**]{% endif %}
+{% endif %}\
+{% endfor %}\
+"""
+footer = ""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_preprocessors = [
+    { pattern = '  +', replace = " " },
+]
+commit_parsers = [
+    { message = "^feat", group = "feat" },
+    { message = "^fix", group = "fix" },
+    { message = "^perf", group = "perf" },
+    { message = "^refactor", group = "refactor" },
+    { message = "^docs", group = "docs" },
+    { message = "^test", group = "test" },
+    { message = "^build", group = "build" },
+    { message = "^ci", group = "ci" },
+    { message = "^style", group = "style" },
+    { message = "^revert", group = "revert" },
+    { message = "^chore", group = "chore" },
+    { message = ".*", group = "other" },
+    # Numbering/order is decided by release.yml (lookup by sha), so 'skip' would be harmless;
+    # the display filter lives in the body template so it stays in one place.
+]
+filter_commits = false
+tag_pattern = '[vV]?[0-9]+\.[0-9]+\.[0-9]+'
+# Output order does not matter (release.yml looks up by sha); oldest keeps it deterministic.
+sort_commits = "oldest"

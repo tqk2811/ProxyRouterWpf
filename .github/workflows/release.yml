@@ -1,0 +1,153 @@
+name: Release
+
+# CI build + publish. MASTER ONLY, and does NOT run by default: it only builds when the head
+# commit of the push carries the marker '[release]'. Manual runs (workflow_dispatch) are also
+# restricted to master.
+# Notes-only mode: marker '[release_notes_only]' (or dispatch with input release_notes_only)
+# only regenerates the GitHub Release notes (no build/publish/upload); it is not counted as a
+# build point.
+#
+# /releases model: every minor line M.N has ONE GitHub Release named after its tag 'vM.N.0'.
+# Each run -> builds version 'M.N.<commit-count>' -> uploads ProxyRouterWpf-M.N.<n>-win-x64.zip
+# as an asset of Release 'vM.N.0' + updates the (incremental, numbered) notes since 'vM.N.0'.
+#
+# Precondition: the tag 'vM.N.0' must already exist on origin (GitVersion anchor + Release name).
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      release_notes_only:
+        description: 'Only regenerate GitHub Release notes (skip build/publish/upload)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # Master only (a dispatch on another ref is rejected here), plus the opt-in marker on push.
+    if: |
+      github.ref == 'refs/heads/master' &&
+      (github.event_name == 'workflow_dispatch' ||
+       contains(github.event.head_commit.message, '[release]') ||
+       contains(github.event.head_commit.message, '[release_notes_only]'))
+    runs-on: windows-latest
+    env:
+      # 'true' when only the notes are regenerated: dispatch input, or head commit marker.
+      NOTES_ONLY: ${{ inputs.release_notes_only || contains(github.event.head_commit.message, '[release_notes_only]') }}
+    steps:
+      - name: Checkout (full history + tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # The app targets net8.0-windows and a newer SDK builds it via reference packs, so any
+      # SDK major >= 8 works; only run setup-dotnet when none is present (windows-latest ships one).
+      - name: Check installed .NET SDKs
+        if: env.NOTES_ONLY != 'true'
+        id: dotnet_check
+        shell: pwsh
+        run: |
+          $sdks = if (Get-Command dotnet -ErrorAction SilentlyContinue) { @(dotnet --list-sdks 2>$null) } else { @() }
+          $haveSdk = [bool]($sdks | Where-Object { if ($_ -match '^(\d+)\.') { [int]$Matches[1] -ge 8 } })
+          $install = -not $haveSdk
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "install=$($install.ToString().ToLower())"
+          Write-Host "Installed SDKs:`n$($sdks -join "`n")"
+          Write-Host "Have .NET SDK >= 8: $haveSdk  -> install=$install"
+
+      - name: Setup .NET
+        if: ${{ env.NOTES_ONLY != 'true' && steps.dotnet_check.outputs.install == 'true' }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install git-cliff
+        shell: pwsh
+        run: |
+          $ver = "2.13.1"
+          $url = "https://github.com/orhun/git-cliff/releases/download/v$ver/git-cliff-$ver-x86_64-pc-windows-msvc.zip"
+          $zip = Join-Path $env:RUNNER_TEMP "git-cliff.zip"
+          Invoke-WebRequest $url -OutFile $zip
+          $dst = Join-Path $env:RUNNER_TEMP "git-cliff"
+          Expand-Archive $zip -DestinationPath $dst -Force
+          $exe = Get-ChildItem $dst -Recurse -Filter git-cliff.exe | Select-Object -First 1
+          Add-Content -Path $env:GITHUB_PATH -Value $exe.DirectoryName
+
+      - name: Publish + zip (win-x64, framework-dependent)
+        if: env.NOTES_ONLY != 'true'
+        shell: pwsh
+        run: ./.github/workflows/BuildCI.ps1   # publish + zip only; the Release is handled below
+
+      - name: Create/update Release and upload the zip
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $notesOnly = $env:NOTES_ONLY -eq 'true'
+          if ($notesOnly) {
+            # Notes-only: no zip to read the version from -> take M.N from the nearest tag.
+            $near = "$(git describe --tags --abbrev=0 --match "v[0-9]*")".Trim()
+            if ($near -notmatch '^v(\d+)\.(\d+)\.') { throw "Cannot derive the minor line from tag '$near'" }
+            $major = $Matches[1]; $minor = $Matches[2]
+          } else {
+            $pkg = Get-ChildItem ./artifacts/*.zip | Select-Object -First 1
+            if (-not $pkg) { throw "No zip produced by BuildCI.ps1" }
+            if ($pkg.BaseName -notmatch '-(\d+)\.(\d+)\.(\d+)-') { throw "Cannot parse the version from $($pkg.Name)" }
+            $major = $Matches[1]; $minor = $Matches[2]
+          }
+          $tag = "v$major.$minor.0"   # tags carry the 'v' prefix
+          $mn  = "$major.$minor"
+          if ($notesOnly) { Write-Host "notes-only  release-tag=$tag" }
+          else { Write-Host "zip=$($pkg.Name)  release-tag=$tag" }
+
+          # Release notes: every BUILD is one header '- M.N.<zzz>' with zzz = rev-list --count tag..R
+          # (matches the zip version because GitVersion counts EVERY commit). Build point R = each
+          # first-parent commit carrying '[release]' + the current HEAD (this run's build, skipped
+          # when it is already a [release] commit). Child items '  + ...' = every new commit in
+          # (previous R..R] -- merges from other branches included naturally.
+          # git-cliff only formats single commits; each line is prefixed '__SHA_<sha>__' for lookup.
+          $lineOf = @{}
+          foreach ($l in @(git-cliff --config cliff-release.toml "$tag..HEAD")) {
+            if ($l -match '^__SHA_([0-9a-f]+)__ (.*)$') { $lineOf[$Matches[1]] = $Matches[2] }
+          }
+          $fps = @(git rev-list --first-parent --reverse "$tag..HEAD")
+          $points = @($fps | Where-Object { (git log -1 --format=%B $_) -match '\[release\]' })
+          if (-not $notesOnly -and $fps.Count -gt 0 -and ($points.Count -eq 0 -or $points[-1] -ne $fps[-1])) {
+            $points += $fps[-1]   # HEAD = the build this run publishes (skipped in notes-only mode)
+          }
+          $out = New-Object System.Collections.Generic.List[string]
+          $prev = $tag
+          foreach ($r in $points) {
+            $n = [int](git rev-list --count "$tag..$r")
+            # Always show the header, even for a build whose changes are all filtered out.
+            $out.Add("- $mn.$n")
+            foreach ($c in @(git rev-list --reverse $r --not $prev)) {
+              if ($lineOf.ContainsKey($c)) { $out.Add("  + $($lineOf[$c])") }
+            }
+            $prev = $r
+          }
+          $notes = ($out -join "`n").Trim()
+          # Commit links: the template emits '__REPO__' -> URL of this repo.
+          $notes = $notes -replace '__REPO__', "$($env:GITHUB_SERVER_URL)/$($env:GITHUB_REPOSITORY)"
+          if ([string]::IsNullOrWhiteSpace($notes)) { $notes = "Release $tag" }
+          Set-Content -Path RELEASE_NOTES.md -Value $notes -Encoding utf8
+
+          # Create Release 'vM.N.0' if missing (on the existing tag), otherwise refresh its notes.
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release edit $tag --notes-file RELEASE_NOTES.md
+          } else {
+            gh release create $tag --title $tag --notes-file RELEASE_NOTES.md --verify-tag
+          }
+
+          if ($notesOnly) {
+            Write-Host "notes-only mode -> skip the zip upload"
+          } else {
+            # Attach this build's zip (clobber when the same version is rebuilt).
+            gh release upload $tag $pkg.FullName --clobber
+          }
