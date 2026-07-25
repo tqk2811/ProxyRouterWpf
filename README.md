@@ -17,6 +17,22 @@ with host-based routing rules. This desktop edition drops the ASP.NET web stack 
 - **Dark / Light / System** theme (live switch), styled after
   [AndroidSyncControl](https://github.com/tqk2811/AndroidSyncControl).
 
+## Screenshots
+
+### Proxies tab — listeners, routing groups and filters
+
+| Light | Dark |
+| --- | --- |
+| ![Proxies tab, light theme](docs/images/proxies-light.png) | ![Proxies tab, dark theme](docs/images/proxies-dark.png) |
+
+### Logs tab — filtering, paging and the RAM FIFO limit
+
+![Tunnel logs](docs/images/logs.png)
+
+### Bandwidth tab — realtime upload / download chart
+
+![Bandwidth monitor](docs/images/bandwidth.png)
+
 ## Differences from the original (by design)
 
 - **No database.** Proxy configuration is stored in a JSON file (`proxyrouter.config.json`) next to
