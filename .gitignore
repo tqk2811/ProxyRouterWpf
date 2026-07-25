@@ -33,6 +33,9 @@ RELEASE_NOTES.md
 proxyrouter.config.json
 *.config.json
 
+## Local-only docs (glossary kept on the machine, not in the repo)
+docs/Glossary-vi.md
+
 ## OS
 Thumbs.db
 Desktop.ini
