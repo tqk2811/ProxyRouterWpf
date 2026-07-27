@@ -1,6 +1,7 @@
 <Window x:Class="ProxyRouterWpf.Views.Dialogs.FilterEditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="clr-namespace:ProxyRouterWpf.Views.Controls"
         Title="Filter" Width="440" SizeToContent="Height"
         WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
@@ -29,8 +30,25 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
-                <Label x:Name="FilterLabel" Content="{DynamicResource Str.Dialog.Filter.ContentLabel}" Margin="0,10,0,0"/>
-                <TextBox x:Name="FilterBox"/>
+                <StackPanel x:Name="BytesPanel" Margin="0,10,0,0">
+                    <Label Content="{DynamicResource Str.Dialog.Filter.BytesLabel}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="6"/>
+                            <ColumnDefinition Width="86"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="BytesBox" Grid.Column="0" MaxLength="24"
+                                 ctl:NumericInput.DigitsOnly="True" ctl:NumericInput.AllowDecimal="True"/>
+                        <ComboBox x:Name="UnitBox" Grid.Column="2"/>
+                    </Grid>
+                    <TextBlock Text="{DynamicResource Str.Dialog.Filter.TotalBytesHint}" TextWrapping="Wrap"
+                               Opacity="0.7" FontSize="11" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel x:Name="FilterPanel" Margin="0,10,0,0">
+                    <Label Content="{DynamicResource Str.Dialog.Filter.HostLabel}"/>
+                    <TextBox x:Name="FilterBox"/>
+                </StackPanel>
                 <CheckBox x:Name="IsNotBox" Content="{DynamicResource Str.Dialog.Filter.Not}" Margin="0,12,0,0"/>
             </StackPanel>
         </DockPanel>

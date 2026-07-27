@@ -164,9 +164,10 @@
 
     <sys:String x:Key="Str.Dialog.Filter.EditTitle">Sửa filter</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.Type">Loại filter</sys:String>
-    <sys:String x:Key="Str.Dialog.Filter.Direction">Traffic direction (chỉ dùng cho TotalBytes)</sys:String>
-    <sys:String x:Key="Str.Dialog.Filter.ContentLabel">Filter (host pattern / hoặc số bytes cho TotalBytes)</sys:String>
-    <sys:String x:Key="Str.Dialog.Filter.BytesLabel">Số bytes ngưỡng (&gt;=)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.Direction">Traffic direction</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.BytesLabel">Ngưỡng (&gt;=)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.TotalBytesHint">Định tuyến khi tunnel có lưu lượng cao nhất tới domain đích theo hướng đã chọn đạt ngưỡng này.</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.BytesRequired">Nhập ngưỡng hợp lệ (số không âm).</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.HostLabel">Host pattern</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.Not">Đảo kết quả (NOT)</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.ContentRequired">Nhập nội dung filter.</sys:String>

@@ -1,6 +1,8 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using ProxyRouterWpf.Enums;
+using ProxyRouterWpf.Helpers;
 using ProxyRouterWpf.Localization;
 
 namespace ProxyRouterWpf.Views.Dialogs
@@ -17,34 +19,53 @@ namespace ProxyRouterWpf.Views.Dialogs
             InitializeComponent();
             TypeBox.ItemsSource = Enum.GetValues<ProxySourceGroupFilterType>();
             DirBox.ItemsSource = Enum.GetValues<ProxyTrafficDirection>();
+            UnitBox.ItemsSource = ByteThreshold.Units;
             TypeBox.SelectedItem = ProxySourceGroupFilterType.Wildcard;
             DirBox.SelectedItem = ProxyTrafficDirection.Both;
-            UpdateDir();
+            UnitBox.SelectedIndex = 0;
+            UpdateTypeVisibility();
         }
 
-        void UpdateDir()
+        /// <summary>TotalBytes is a single numeric threshold, so it replaces the one-per-line box.</summary>
+        void UpdateTypeVisibility()
         {
             bool total = (ProxySourceGroupFilterType?)TypeBox.SelectedItem == ProxySourceGroupFilterType.TotalBytes;
-            DirPanel.IsEnabled = total;
+            DirPanel.Visibility = total ? Visibility.Visible : Visibility.Collapsed;
+            DirColumn.Width = total ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+            BytesPanel.Visibility = total ? Visibility.Visible : Visibility.Collapsed;
+            LinesPanel.Visibility = total ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        void TypeBox_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => UpdateDir();
+        void TypeBox_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => UpdateTypeVisibility();
         void Header_Drag(object sender, MouseButtonEventArgs e) { if (e.ButtonState == MouseButtonState.Pressed) DragMove(); }
         void Cancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
         void Ok_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(LinesBox.Text))
-            {
-                MessageBox.Show(Loc.S("Str.Dialog.BulkSource.LinesRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
             FilterType = (ProxySourceGroupFilterType)(TypeBox.SelectedItem ?? ProxySourceGroupFilterType.Wildcard);
-            TrafficDirection = FilterType == ProxySourceGroupFilterType.TotalBytes
-                ? (ProxyTrafficDirection)(DirBox.SelectedItem ?? ProxyTrafficDirection.Both)
-                : null;
+            if (FilterType == ProxySourceGroupFilterType.TotalBytes)
+            {
+                if (!ByteThreshold.TryCompose(BytesBox.Text, UnitBox.SelectedItem as ByteUnit, out long bytes))
+                {
+                    MessageBox.Show(Loc.S("Str.Dialog.Filter.BytesRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    BytesBox.Focus();
+                    return;
+                }
+                TrafficDirection = (ProxyTrafficDirection)(DirBox.SelectedItem ?? ProxyTrafficDirection.Both);
+                Lines = bytes.ToString(CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(LinesBox.Text))
+                {
+                    MessageBox.Show(Loc.S("Str.Dialog.BulkSource.LinesRequired"), "ProxyRouter", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    LinesBox.Focus();
+                    return;
+                }
+                TrafficDirection = null;
+                Lines = LinesBox.Text;
+            }
             IsNot = IsNotBox.IsChecked == true;
-            Lines = LinesBox.Text;
             DialogResult = true;
         }
     }

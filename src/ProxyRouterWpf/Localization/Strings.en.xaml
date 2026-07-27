@@ -164,9 +164,10 @@
 
     <sys:String x:Key="Str.Dialog.Filter.EditTitle">Edit filter</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.Type">Filter type</sys:String>
-    <sys:String x:Key="Str.Dialog.Filter.Direction">Traffic direction (TotalBytes only)</sys:String>
-    <sys:String x:Key="Str.Dialog.Filter.ContentLabel">Filter (host pattern / or bytes for TotalBytes)</sys:String>
-    <sys:String x:Key="Str.Dialog.Filter.BytesLabel">Threshold bytes (&gt;=)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.Direction">Traffic direction</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.BytesLabel">Threshold (&gt;=)</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.TotalBytesHint">Routes when the heaviest single tunnel to the target domain in the selected direction reaches this threshold.</sys:String>
+    <sys:String x:Key="Str.Dialog.Filter.BytesRequired">Enter a valid threshold (non-negative number).</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.HostLabel">Host pattern</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.Not">Invert result (NOT)</sys:String>
     <sys:String x:Key="Str.Dialog.Filter.ContentRequired">Enter filter content.</sys:String>

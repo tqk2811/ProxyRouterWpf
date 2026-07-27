@@ -7,6 +7,14 @@ A **timeline read bottom-to-top**: each `## [M.m.0]` is the tag that opened a mi
 commits stacked ABOVE it are that line's successive versions `M.m.1`, `M.m.2`, … (patch number =
 commits since the tag), newest on top. Each line shows its version, conventional type, and message.
 
+- 1.0.5 *(feat)* **(filters)** Enter a TotalBytes threshold as a value plus a unit
+- 1.0.4 *(feat)* **(ui)** Add a byte threshold helper and decimal numeric input
+- 1.0.3 *(docs)* Add a Vietnamese README and cross-link both
+- 1.0.2 *(feat)* **(logs)** Show the tunnel start time as its own column
+- 1.0.1 *(chore)* Stop tracking the Vietnamese glossary doc
+## [1.0.0]
+
+- *(docs)* Document the versioning and release flow [release]
 - *(ci)* Add the master-only opt-in release pipeline
 - *(build)* **(version)** Derive the app version from GitVersion tags
 - *(docs)* Add demo screenshots to the README

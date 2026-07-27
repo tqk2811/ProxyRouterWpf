@@ -1,6 +1,7 @@
 <Window x:Class="ProxyRouterWpf.Views.Dialogs.BulkAddFiltersWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="clr-namespace:ProxyRouterWpf.Views.Controls"
         Title="Thêm filter" Width="500" Height="460"
         WindowStyle="None" ResizeMode="CanResizeWithGrip" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
@@ -21,7 +22,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition x:Name="DirColumn" Width="*"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
@@ -43,9 +44,26 @@
                         <CheckBox x:Name="IsNotBox" Content="NOT" Margin="0,0,0,6"/>
                     </StackPanel>
                 </Grid>
-                <Label DockPanel.Dock="Top" Content="{DynamicResource Str.Dialog.BulkFilter.LinesHint}" Margin="0,10,0,4"/>
-                <TextBox x:Name="LinesBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
-                         FontFamily="Consolas" TextWrapping="NoWrap" VerticalContentAlignment="Top"/>
+                <StackPanel x:Name="BytesPanel" DockPanel.Dock="Top" Margin="0,10,0,0" Visibility="Collapsed">
+                    <Label Content="{DynamicResource Str.Dialog.Filter.BytesLabel}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="6"/>
+                            <ColumnDefinition Width="86"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="BytesBox" Grid.Column="0" MaxLength="24"
+                                 ctl:NumericInput.DigitsOnly="True" ctl:NumericInput.AllowDecimal="True"/>
+                        <ComboBox x:Name="UnitBox" Grid.Column="2"/>
+                    </Grid>
+                    <TextBlock Text="{DynamicResource Str.Dialog.Filter.TotalBytesHint}" TextWrapping="Wrap"
+                               Opacity="0.7" FontSize="11" Margin="0,4,0,0"/>
+                </StackPanel>
+                <DockPanel x:Name="LinesPanel">
+                    <Label DockPanel.Dock="Top" Content="{DynamicResource Str.Dialog.BulkFilter.LinesHint}" Margin="0,10,0,4"/>
+                    <TextBox x:Name="LinesBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                             FontFamily="Consolas" TextWrapping="NoWrap" VerticalContentAlignment="Top"/>
+                </DockPanel>
             </DockPanel>
         </DockPanel>
     </Border>
