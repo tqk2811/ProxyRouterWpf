@@ -6,7 +6,8 @@ namespace ProxyRouterWpf.Views.Controls
 {
     /// <summary>
     /// Attached behaviour restricting a <see cref="TextBox"/> to digits, so a binding to an int
-    /// property can never be fed something unparsable. Set <c>ctl:NumericInput.DigitsOnly="True"</c>.
+    /// property can never be fed something unparsable. Set <c>ctl:NumericInput.DigitsOnly="True"</c>,
+    /// plus <c>ctl:NumericInput.AllowDecimal="True"</c> to also accept a single decimal separator.
     /// </summary>
     public static class NumericInput
     {
@@ -15,6 +16,12 @@ namespace ProxyRouterWpf.Views.Controls
 
         public static void SetDigitsOnly(DependencyObject element, bool value) => element.SetValue(DigitsOnlyProperty, value);
         public static bool GetDigitsOnly(DependencyObject element) => (bool)element.GetValue(DigitsOnlyProperty);
+
+        public static readonly DependencyProperty AllowDecimalProperty = DependencyProperty.RegisterAttached(
+            "AllowDecimal", typeof(bool), typeof(NumericInput), new PropertyMetadata(false));
+
+        public static void SetAllowDecimal(DependencyObject element, bool value) => element.SetValue(AllowDecimalProperty, value);
+        public static bool GetAllowDecimal(DependencyObject element) => (bool)element.GetValue(AllowDecimalProperty);
 
         static void OnDigitsOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -51,11 +58,13 @@ namespace ProxyRouterWpf.Views.Controls
                 e.CancelCommand();
         }
 
-        /// <summary>Applies the pending edit to a copy of the text and checks the result is all digits.</summary>
+        /// <summary>Applies the pending edit to a copy of the text and checks the result is still a number.</summary>
         static bool WouldStayNumeric(TextBox tb, string insert)
         {
             var text = tb.Text.Remove(tb.SelectionStart, tb.SelectionLength).Insert(tb.SelectionStart, insert);
-            return text.All(char.IsAsciiDigit);
+            if (!GetAllowDecimal(tb)) return text.All(char.IsAsciiDigit);
+            int separators = text.Count(c => c is '.' or ',');
+            return separators <= 1 && text.All(c => char.IsAsciiDigit(c) || c is '.' or ',');
         }
     }
 }
